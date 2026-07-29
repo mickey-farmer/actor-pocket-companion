@@ -21,19 +21,37 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
-  const valid = await verifySessionToken(token);
+  try {
+    const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
+    const valid = await verifySessionToken(token);
 
-  if (!valid) {
+    if (!valid) {
+      if (pathname.startsWith('/api/')) {
+        return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+      }
+      // req.nextUrl.clone() (rather than `new URL('/login', req.url)`) is
+      // the pattern Next.js itself recommends for redirects inside
+      // middleware — it reuses the already-parsed request URL instead of
+      // re-parsing a string, which is both safer and cheaper.
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = '/login';
+      loginUrl.searchParams.set('next', pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    return NextResponse.next();
+  } catch (err) {
+    // Never let an unexpected error here take down the whole app with a
+    // raw 500 — log it (visible in Vercel's function logs) and fail safe
+    // by sending the visitor to the login page instead.
+    console.error('middleware error:', err);
     if (pathname.startsWith('/api/')) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
-    const loginUrl = new URL('/login', req.url);
-    loginUrl.searchParams.set('next', pathname);
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = '/login';
     return NextResponse.redirect(loginUrl);
   }
-
-  return NextResponse.next();
 }
 
 export const config = {
