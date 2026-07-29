@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme variables — each block is "R G B" (space-separated, no commas) so
+   Tailwind can compose them into rgb(var(--x) / <alpha-value>) and still
+   support opacity modifiers like bg-stage-accent/20. The active theme is
+   chosen by ThemePicker/ThemeContext, which set data-theme on <html>. */
+
+:root,
+[data-theme='dusk'] {
+  --stage-bg-rgb: 58 64 72;
+  --stage-panel-rgb: 69 76 86;
+  --stage-panel2-rgb: 77 84 96;
+  --stage-border-rgb: 90 98 112;
+  --stage-text-rgb: 238 241 244;
+  --stage-accent-rgb: 91 155 213;
+  --stage-accentDark-rgb: 63 124 184;
+  --stage-accent2-rgb: 154 165 177;
+  --stage-onAccent-rgb: 58 64 72;
+}
+
+[data-theme='slate'] {
+  --stage-bg-rgb: 30 41 59;
+  --stage-panel-rgb: 51 65 85;
+  --stage-panel2-rgb: 63 79 104;
+  --stage-border-rgb: 71 85 105;
+  --stage-text-rgb: 241 245 249;
+  --stage-accent-rgb: 45 212 191;
+  --stage-accentDark-rgb: 20 184 166;
+  --stage-accent2-rgb: 148 163 184;
+  --stage-onAccent-rgb: 30 41 59;
+}
+
+[data-theme='pink'] {
+  --stage-bg-rgb: 59 37 48;
+  --stage-panel-rgb: 74 47 60;
+  --stage-panel2-rgb: 85 54 74;
+  --stage-border-rgb: 107 67 88;
+  --stage-text-rgb: 251 232 240;
+  --stage-accent-rgb: 236 72 153;
+  --stage-accentDark-rgb: 219 39 119;
+  --stage-accent2-rgb: 201 155 173;
+  --stage-onAccent-rgb: 59 37 48;
+}
+
+/* Sage — muted, grayish green (not a deep forest green). */
+[data-theme='sage'] {
+  --stage-bg-rgb: 47 52 44;
+  --stage-panel-rgb: 58 64 56;
+  --stage-panel2-rgb: 67 74 64;
+  --stage-border-rgb: 91 99 85;
+  --stage-text-rgb: 238 241 234;
+  --stage-accent-rgb: 156 175 136;
+  --stage-accentDark-rgb: 127 148 104;
+  --stage-accent2-rgb: 168 179 156;
+  --stage-onAccent-rgb: 47 52 44;
+}
+
+[data-theme='dark'] {
+  --stage-bg-rgb: 18 18 18;
+  --stage-panel-rgb: 30 30 30;
+  --stage-panel2-rgb: 39 39 39;
+  --stage-border-rgb: 58 58 58;
+  --stage-text-rgb: 242 242 242;
+  --stage-accent-rgb: 245 158 11;
+  --stage-accentDark-rgb: 217 119 6;
+  --stage-accent2-rgb: 156 163 175;
+  --stage-onAccent-rgb: 18 18 18;
+}
+
+[data-theme='light'] {
+  --stage-bg-rgb: 244 245 247;
+  --stage-panel-rgb: 255 255 255;
+  --stage-panel2-rgb: 236 238 242;
+  --stage-border-rgb: 215 219 226;
+  --stage-text-rgb: 31 36 48;
+  --stage-accent-rgb: 37 99 235;
+  --stage-accentDark-rgb: 29 78 216;
+  --stage-accent2-rgb: 100 116 139;
+  --stage-onAccent-rgb: 255 255 255;
+}
+
+html,
+body {
+  background-color: rgb(var(--stage-bg-rgb));
+  color: rgb(var(--stage-text-rgb));
+}
+
+/* Prevents iOS Safari from auto-zooming when a text input/textarea is
+   focused — it only zooms if the font-size is below 16px. */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+.line-blank {
+  filter: blur(6px);
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.line-blank.revealed {
+  filter: none;
+}
