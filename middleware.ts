@@ -1,14 +1,8 @@
-// Must be the very first import — see the comments in that file for why.
-// It works around a Next.js internal bug where merely importing
-// `next/server` below can crash with "__dirname is not defined" on Vercel.
-import './lib/polyfillDirname';
-
 import { NextRequest, NextResponse } from 'next/server';
-// Relative import on purpose: middleware.ts is the only Edge Runtime entry
-// point in this app, and Vercel's Edge Function bundler has known issues
-// resolving the "@/*" tsconfig path alias for middleware specifically,
+// Relative import on purpose: Vercel's middleware bundler has known issues
+// resolving the "@/*" tsconfig path alias for middleware.ts specifically,
 // which can surface as a false "referencing unsupported modules" build
-// failure even though the imported file itself is fully Edge-safe.
+// failure even though the imported file itself is fine.
 import { SESSION_COOKIE_NAME, verifySessionToken } from './lib/auth';
 
 // Paths that must stay reachable without a valid session.
@@ -67,4 +61,12 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  // Runs this middleware in the Node.js runtime instead of Edge (stable as
+  // of Next.js 15.5). We were hitting a well-documented Next.js internal bug
+  // where importing `next/server` in an Edge middleware pulls in Next's own
+  // vendored ua-parser-js, which references the Node-only `__dirname` global
+  // at module scope and crashes instantly — a polyfill workaround didn't
+  // reliably fix it. The Node.js runtime has a real `__dirname`, so this
+  // sidesteps the bug entirely instead of working around it.
+  runtime: 'nodejs',
 };
