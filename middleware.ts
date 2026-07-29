@@ -10,18 +10,22 @@ import { SESSION_COOKIE_NAME, verifySessionToken } from './lib/auth';
 const PUBLIC_PATHS = ['/login', '/api/login'];
 
 export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-
-  const isPublic =
-    PUBLIC_PATHS.some((p) => pathname === p) ||
-    pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico';
-
-  if (isPublic) {
-    return NextResponse.next();
-  }
-
+  // Everything is inside this try/catch, including the very first line —
+  // if anything at all throws (even something as basic as reading
+  // req.nextUrl), we still want to fail safe with a redirect and a logged
+  // error instead of a raw 500.
   try {
+    const { pathname } = req.nextUrl;
+
+    const isPublic =
+      PUBLIC_PATHS.some((p) => pathname === p) ||
+      pathname.startsWith('/_next') ||
+      pathname === '/favicon.ico';
+
+    if (isPublic) {
+      return NextResponse.next();
+    }
+
     const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
     const valid = await verifySessionToken(token);
 
@@ -41,16 +45,18 @@ export async function middleware(req: NextRequest) {
 
     return NextResponse.next();
   } catch (err) {
-    // Never let an unexpected error here take down the whole app with a
-    // raw 500 — log it (visible in Vercel's function logs) and fail safe
-    // by sending the visitor to the login page instead.
+    // Visible in Vercel's Function Logs for this deployment — if you hit
+    // this again, that's the line to go look for.
     console.error('middleware error:', err);
-    if (pathname.startsWith('/api/')) {
-      return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    try {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = '/login';
+      return NextResponse.redirect(loginUrl);
+    } catch {
+      // Even req.nextUrl.clone() failed — give up gracefully rather than
+      // let this throw a second time.
+      return NextResponse.next();
     }
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = '/login';
-    return NextResponse.redirect(loginUrl);
   }
 }
 
