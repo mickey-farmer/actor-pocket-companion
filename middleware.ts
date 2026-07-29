@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SESSION_COOKIE_NAME, verifySessionToken } from '@/lib/auth';
+// Relative import on purpose: middleware.ts is the only Edge Runtime entry
+// point in this app, and Vercel's Edge Function bundler has known issues
+// resolving the "@/*" tsconfig path alias for middleware specifically,
+// which can surface as a false "referencing unsupported modules" build
+// failure even though the imported file itself is fully Edge-safe.
+import { SESSION_COOKIE_NAME, verifySessionToken } from './lib/auth';
 
 // Paths that must stay reachable without a valid session.
 const PUBLIC_PATHS = ['/login', '/api/login'];
