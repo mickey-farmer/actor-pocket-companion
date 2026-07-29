@@ -12,13 +12,14 @@
 // before `next/server`. ES module imports execute in source order, so as
 // long as this import comes first in middleware.ts, it runs before
 // next/server's module body (and therefore before ua-parser-js) does.
-declare global {
-  // eslint-disable-next-line no-var
-  var __dirname: string | undefined;
-}
-
-if (typeof globalThis.__dirname === 'undefined') {
-  globalThis.__dirname = '/';
+// Deliberately using `as any` here instead of a `declare global { var __dirname }`
+// ambient declaration — @types/node already declares `__dirname` globally as
+// `string` (non-optional), and redeclaring it as `string | undefined` in this
+// file conflicts with that existing declaration ("Subsequent variable
+// declarations must have the same type"). Going through `any` sidesteps the
+// clash entirely without touching @types/node's declaration.
+if (typeof (globalThis as any).__dirname === 'undefined') {
+  (globalThis as any).__dirname = '/';
 }
 
 export {};
