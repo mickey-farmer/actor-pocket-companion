@@ -1,3 +1,8 @@
+// Must be the very first import — see the comments in that file for why.
+// It works around a Next.js internal bug where merely importing
+// `next/server` below can crash with "__dirname is not defined" on Vercel.
+import './lib/polyfillDirname';
+
 import { NextRequest, NextResponse } from 'next/server';
 // Relative import on purpose: middleware.ts is the only Edge Runtime entry
 // point in this app, and Vercel's Edge Function bundler has known issues
