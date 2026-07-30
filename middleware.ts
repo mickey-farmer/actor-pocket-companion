@@ -61,13 +61,17 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-  // Back on the default Edge runtime. We'd previously switched this to
-  // 'nodejs' to work around a Next.js internal bug where importing
-  // `next/server` pulls in a vendored ua-parser-js that references the
-  // Node-only `__dirname` global and crashes on Edge — but that only
-  // happens when the `userAgent()` helper from 'next/server' actually gets
-  // bundled in. This file only imports NextRequest/NextResponse, so
-  // tree-shaking should keep ua-parser-js out entirely.
+  // No `runtime` key here — middleware runs on the Edge runtime by default
+  // when this is omitted. (Next.js rejects a literal 'edge' value here; it
+  // wants either no runtime key, 'experimental-edge', or 'nodejs'.)
+  //
+  // We'd previously switched this to 'nodejs' to work around a Next.js
+  // internal bug where importing `next/server` pulls in a vendored
+  // ua-parser-js that references the Node-only `__dirname` global and
+  // crashes on Edge — but that only happens when the `userAgent()` helper
+  // from 'next/server' actually gets bundled in. This file only imports
+  // NextRequest/NextResponse, so tree-shaking should keep ua-parser-js out
+  // entirely.
   //
   // The Node.js runtime traded that risk for a worse one: Vercel's
   // Node.js Functions packaging has real, currently-unresolved bugs
@@ -77,9 +81,8 @@ export const config = {
   // Edge sidesteps all of that since it's bundled into one self-contained
   // function with no Node module resolution at deploy time.
   //
-  // If this ua-parser-js/__dirname crash resurfaces, the fix is to avoid
+  // If the ua-parser-js/__dirname crash resurfaces, the fix is to avoid
   // importing 'next/server' as a namespace/barrel (import only the named
   // exports actually used, as done below) or to vendor a minimal
   // NextResponse-only shim instead of pulling in the whole module.
-  runtime: 'edge',
 };
