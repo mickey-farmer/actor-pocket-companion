@@ -3,4 +3,4 @@ const nextConfig = {
   serverExternalPackages: ['pdf-parse', 'mammoth'],
 };
 
-export default nextConfig;
+module.exports = nextConfig;

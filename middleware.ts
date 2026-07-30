@@ -61,12 +61,25 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
-  // Runs this middleware in the Node.js runtime instead of Edge (stable as
-  // of Next.js 15.5). We were hitting a well-documented Next.js internal bug
-  // where importing `next/server` in an Edge middleware pulls in Next's own
-  // vendored ua-parser-js, which references the Node-only `__dirname` global
-  // at module scope and crashes instantly — a polyfill workaround didn't
-  // reliably fix it. The Node.js runtime has a real `__dirname`, so this
-  // sidesteps the bug entirely instead of working around it.
-  runtime: 'nodejs',
+  // Back on the default Edge runtime. We'd previously switched this to
+  // 'nodejs' to work around a Next.js internal bug where importing
+  // `next/server` pulls in a vendored ua-parser-js that references the
+  // Node-only `__dirname` global and crashes on Edge — but that only
+  // happens when the `userAgent()` helper from 'next/server' actually gets
+  // bundled in. This file only imports NextRequest/NextResponse, so
+  // tree-shaking should keep ua-parser-js out entirely.
+  //
+  // The Node.js runtime traded that risk for a worse one: Vercel's
+  // Node.js Functions packaging has real, currently-unresolved bugs
+  // handling Next's ESM/CJS middleware output and the `next` package's
+  // conditional exports (SyntaxError on plain CJS, ERR_MODULE_NOT_FOUND
+  // for 'next/server' once switched to ESM via package.json "type").
+  // Edge sidesteps all of that since it's bundled into one self-contained
+  // function with no Node module resolution at deploy time.
+  //
+  // If this ua-parser-js/__dirname crash resurfaces, the fix is to avoid
+  // importing 'next/server' as a namespace/barrel (import only the named
+  // exports actually used, as done below) or to vendor a minimal
+  // NextResponse-only shim instead of pulling in the whole module.
+  runtime: 'edge',
 };
