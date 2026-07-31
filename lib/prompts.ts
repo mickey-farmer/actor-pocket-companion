@@ -1,4 +1,5 @@
 import type { ChatMessageInput } from './openrouter';
+import { CHALLENGE_CATEGORIES } from './types';
 import type { ChatMessageRow } from './types';
 
 export function buildAnalysisMessages(input: {
@@ -74,4 +75,36 @@ Strict scope rule: you ONLY discuss this scene, this character, and this actor's
 
 export function toOpenRouterHistory(messages: ChatMessageRow[]): ChatMessageInput[] {
   return messages.map((m) => ({ role: m.role, content: m.content }));
+}
+
+export function buildDailyChallengeMessages(input: {
+  recentPromptTexts: string[];
+}): ChatMessageInput[] {
+  const system = `You are an acting coach designing a short "daily challenge" exercise to keep a working actor sharp between jobs, classes, and auditions. Each challenge must be doable ALONE, in under 15 minutes, with no scene partner, script, or special equipment required (ordinary household objects are fine).
+
+Draw from a mix of these categories, choosing whichever fits best each time: ${CHALLENGE_CATEGORIES.join(', ')}.
+
+Respond with ONLY a single JSON object (no prose outside it, no markdown fences) with exactly these keys:
+
+{
+  "category": string — one of: ${CHALLENGE_CATEGORIES.join(', ')},
+  "title": string — a short, punchy 3-6 word title,
+  "prompt": string — 2-4 sentences of concrete instructions the actor can follow immediately. Be specific and actionable, not vague general advice,
+  "durationMinutes": number — a realistic estimate, usually between 3 and 15
+}
+
+Vary category and content from one challenge to the next — don't default to the same category repeatedly.`;
+
+  const recentBlock = input.recentPromptTexts.length
+    ? `\n\nAvoid repeating or closely mirroring these recent challenges:\n${input.recentPromptTexts
+        .map((p, i) => `${i + 1}. ${p}`)
+        .join('\n')}`
+    : '';
+
+  const user = `Generate today's acting challenge.${recentBlock}`;
+
+  return [
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ];
 }

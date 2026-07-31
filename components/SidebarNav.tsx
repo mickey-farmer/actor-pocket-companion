@@ -81,6 +81,19 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
 
   return (
     <nav className="flex-1 overflow-y-auto px-2 py-3">
+      <Link
+        href="/challenge"
+        onClick={onNavigate}
+        className={`mb-3 flex items-center gap-2 rounded px-2 py-2 text-sm font-medium ${
+          pathname === '/challenge'
+            ? 'bg-stage-accent/20 text-stage-accent'
+            : 'text-slate-300 hover:bg-stage-bg/60'
+        }`}
+      >
+        <span aria-hidden="true">{'\u{1F525}'}</span>
+        Today&apos;s Challenge
+      </Link>
+
       <div className="mb-1 flex items-center justify-between px-2">
         <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
           Scripts

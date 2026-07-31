@@ -5,6 +5,7 @@ import type {
   AuditionStatus,
   Beat,
   ChatMessageRow,
+  DailyChallengeRow,
   GivenCircumstances,
   ScriptFormat,
   ScriptRow,
@@ -83,9 +84,22 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
       `;
+      await sql`
+        CREATE TABLE IF NOT EXISTS daily_challenges (
+          id TEXT PRIMARY KEY,
+          challenge_date TEXT NOT NULL,
+          category TEXT NOT NULL,
+          title TEXT NOT NULL,
+          prompt_text TEXT NOT NULL,
+          duration_minutes INTEGER,
+          completed_at TIMESTAMPTZ,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `;
       await sql`CREATE INDEX IF NOT EXISTS idx_scenes_script_id ON scenes(script_id);`;
       await sql`CREATE INDEX IF NOT EXISTS idx_chat_messages_scene_id ON chat_messages(scene_id);`;
       await sql`CREATE INDEX IF NOT EXISTS idx_auditions_date ON auditions(audition_date);`;
+      await sql`CREATE INDEX IF NOT EXISTS idx_daily_challenges_date ON daily_challenges(challenge_date);`;
     })();
   }
   return schemaReady;
@@ -359,4 +373,77 @@ export async function updateAudition(
 export async function deleteAudition(id: string): Promise<void> {
   await ensureSchema();
   await sql`DELETE FROM auditions WHERE id = ${id};`;
+}
+
+// ---------- Daily Challenges ----------
+
+export async function createDailyChallenge(input: {
+  challengeDate: string;
+  category: string;
+  title: string;
+  promptText: string;
+  durationMinutes?: number | null;
+}): Promise<string> {
+  await ensureSchema();
+  const id = newId();
+  await sql`
+    INSERT INTO daily_challenges (id, challenge_date, category, title, prompt_text, duration_minutes)
+    VALUES (
+      ${id}, ${input.challengeDate}, ${input.category}, ${input.title},
+      ${input.promptText}, ${input.durationMinutes ?? null}
+    );
+  `;
+  return id;
+}
+
+export async function getDailyChallenge(id: string): Promise<DailyChallengeRow | null> {
+  await ensureSchema();
+  const { rows } = await sql<DailyChallengeRow>`
+    SELECT * FROM daily_challenges WHERE id = ${id};
+  `;
+  return (rows[0] as DailyChallengeRow) ?? null;
+}
+
+/** The most recently generated challenge for a given 'YYYY-MM-DD' date, if any. */
+export async function getLatestChallengeForDate(
+  date: string
+): Promise<DailyChallengeRow | null> {
+  await ensureSchema();
+  const { rows } = await sql<DailyChallengeRow>`
+    SELECT * FROM daily_challenges
+    WHERE challenge_date = ${date}
+    ORDER BY created_at DESC
+    LIMIT 1;
+  `;
+  return (rows[0] as DailyChallengeRow) ?? null;
+}
+
+/**
+ * One row per distinct date (whichever was generated most recently for
+ * that date, i.e. the one a manual refresh replaced with), most recent
+ * dates first. Used for both the history list and streak calculation.
+ */
+export async function listRecentChallenges(limit = 14): Promise<DailyChallengeRow[]> {
+  await ensureSchema();
+  const { rows } = await sql<DailyChallengeRow>`
+    SELECT DISTINCT ON (challenge_date) *
+    FROM daily_challenges
+    ORDER BY challenge_date DESC, created_at DESC
+    LIMIT ${limit};
+  `;
+  return rows as DailyChallengeRow[];
+}
+
+/** Idempotent — completing an already-completed challenge just returns it unchanged. */
+export async function completeDailyChallenge(
+  id: string
+): Promise<DailyChallengeRow | null> {
+  await ensureSchema();
+  const { rows } = await sql<DailyChallengeRow>`
+    UPDATE daily_challenges SET completed_at = now()
+    WHERE id = ${id} AND completed_at IS NULL
+    RETURNING *;
+  `;
+  if (rows[0]) return rows[0] as DailyChallengeRow;
+  return getDailyChallenge(id);
 }

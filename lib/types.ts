@@ -81,3 +81,32 @@ export interface AuditionRow {
   script_id: string | null;
   created_at: string;
 }
+
+// A general craft-exercise pool, not tied to any category enum at the DB
+// level (the AI reports whichever category fits, as free text) — this list
+// is just what we hint it toward when generating.
+export const CHALLENGE_CATEGORIES = [
+  'vocal',
+  'physical',
+  'emotional-recall',
+  'improv',
+  'cold-read',
+  'observation',
+  'imagination',
+] as const;
+
+export type ChallengeCategory = (typeof CHALLENGE_CATEGORIES)[number];
+
+export interface DailyChallengeRow {
+  id: string;
+  // 'YYYY-MM-DD', UTC. Which calendar day this challenge belongs to —
+  // stored as plain text rather than a real DATE column to avoid
+  // timezone-parsing surprises from the Postgres driver.
+  challenge_date: string;
+  category: string;
+  title: string;
+  prompt_text: string;
+  duration_minutes: number | null;
+  completed_at: string | null;
+  created_at: string;
+}
