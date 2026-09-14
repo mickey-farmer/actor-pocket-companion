@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#3a4048',
+  themeColor: '#181a1f',
 };
 
 // Keep this list in sync with THEMES in components/ThemeContext.tsx — it's
@@ -44,7 +44,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen bg-stage-bg text-stage-text font-serif">
+      <body className="min-h-screen bg-stage-bg font-sans text-stage-text antialiased">
         {/* Runs before hydration so the saved theme applies with no flash
             of the default "dusk" theme on load. */}
         <Script id="apc-theme-init" strategy="beforeInteractive">

@@ -22,7 +22,7 @@ export default function SpeakButton({
       className={`shrink-0 rounded px-2 py-1 text-xs ${
         isSpeaking
           ? 'bg-stage-accent text-stage-onAccent'
-          : 'border border-stage-border text-slate-400 hover:border-stage-accent hover:text-stage-accent'
+          : 'border border-stage-border text-stage-muted hover:border-stage-accent hover:text-stage-accent'
       } ${className}`}
     >
       {isSpeaking ? '■ Stop' : '🔊 Speak'}

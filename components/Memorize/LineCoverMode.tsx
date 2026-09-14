@@ -20,7 +20,7 @@ export default function LineCoverMode({ lines }: { lines: ScriptLine[] }) {
 
   return (
     <div className="space-y-2 rounded-lg border border-stage-border bg-stage-panel p-4">
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-stage-muted">
         Tap your blurred lines to reveal them one at a time as you recite from
         memory. Everyone else&apos;s lines stay visible so you still have your
         cues.
@@ -28,14 +28,14 @@ export default function LineCoverMode({ lines }: { lines: ScriptLine[] }) {
       {lines.map((line, i) => (
         <div key={i} className="text-sm">
           {line.speaker && (
-            <div className="text-xs uppercase tracking-wide text-slate-500">
+            <div className="text-xs uppercase tracking-wide text-stage-subtle">
               {line.speaker}
             </div>
           )}
           {line.isCharacterLine ? (
             <button
               onClick={() => toggle(i)}
-              className={`line-blank block w-full rounded bg-black/30 px-3 py-2.5 text-left ${
+              className={`line-blank block w-full rounded bg-stage-panel2 px-3 py-2.5 text-left ${
                 revealed.has(i) ? 'revealed' : ''
               }`}
             >
@@ -43,7 +43,7 @@ export default function LineCoverMode({ lines }: { lines: ScriptLine[] }) {
             </button>
           ) : line.speaker ? (
             <div className="flex items-start gap-2">
-              <p className="flex-1 text-slate-300">{line.text}</p>
+              <p className="flex-1 text-stage-muted">{line.text}</p>
               {isSupported && (
                 <SpeakButton
                   isSpeaking={speakingId === `cover-${i}`}
@@ -54,7 +54,7 @@ export default function LineCoverMode({ lines }: { lines: ScriptLine[] }) {
               )}
             </div>
           ) : (
-            <p className="italic text-slate-500">{line.text}</p>
+            <p className="italic text-stage-subtle">{line.text}</p>
           )}
         </div>
       ))}

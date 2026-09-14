@@ -55,7 +55,7 @@ export default function NotesPanel({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-stage-muted">
           Just for you — director notes, adjustments to try, substitutions.
           Not shared with the AI.
         </p>
@@ -67,7 +67,7 @@ export default function NotesPanel({
         onBlur={handleBlur}
         rows={10}
         placeholder="e.g. Director said play it faster. Try substituting my own audition nerves for the character's anxiety in beat 2."
-        className="w-full rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent"
+        className="w-full rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-stage-text outline-none focus:border-stage-accent"
       />
     </div>
   );
@@ -75,7 +75,7 @@ export default function NotesPanel({
 
 function SaveIndicator({ state }: { state: SaveState }) {
   if (state === 'idle') return null;
-  if (state === 'saving') return <span className="text-xs text-slate-500">Saving…</span>;
-  if (state === 'error') return <span className="text-xs text-red-400">Couldn&apos;t save</span>;
-  return <span className="text-xs text-stage-accent2">Saved</span>;
+  if (state === 'saving') return <span className="text-xs text-stage-subtle">Saving…</span>;
+  if (state === 'error') return <span className="text-xs text-stage-danger">Couldn&apos;t save</span>;
+  return <span className="text-xs text-stage-muted">Saved</span>;
 }

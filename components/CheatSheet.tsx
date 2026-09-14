@@ -13,7 +13,7 @@ export default function CheatSheet({
 }) {
   if (!analysis) {
     return (
-      <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-slate-400">
+      <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-stage-muted">
         Generate the analysis first (see the Analysis tab) — the cheat sheet is
         built from it.
       </div>
@@ -35,7 +35,7 @@ export default function CheatSheet({
         <h2 className="text-lg font-semibold text-stage-accent print:text-black">
           {sceneHeading}
         </h2>
-        <p className="mb-4 text-sm text-slate-400 print:text-black">
+        <p className="mb-4 text-sm text-stage-muted print:text-black">
           Playing: {character}
         </p>
 
@@ -66,7 +66,7 @@ export default function CheatSheet({
             {(analysis.beats ?? []).map((b) => (
               <li key={b.beatNumber}>
                 {b.description}{' '}
-                <span className="text-stage-accent2 print:text-black">
+                <span className="text-stage-muted print:text-black">
                   (shift: {b.intentionShift})
                 </span>
               </li>
@@ -74,7 +74,7 @@ export default function CheatSheet({
           </ol>
         </CheatItem>
 
-        <p className="mt-4 text-xs text-slate-500 print:text-black">
+        <p className="mt-4 text-xs text-stage-subtle print:text-black">
           Objective/obstacle and relationship-map sections are coming in a
           later version — for now, use the Chat tab to work those out loud.
         </p>
@@ -86,7 +86,7 @@ export default function CheatSheet({
 function CheatItem({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-4">
-      <h3 className="text-xs font-semibold uppercase tracking-wide text-slate-400 print:text-black">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-stage-muted print:text-black">
         {title}
       </h3>
       <div className="mt-1 text-sm leading-relaxed print:text-black">{children}</div>

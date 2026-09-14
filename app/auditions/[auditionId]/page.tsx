@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getAudition, getScript } from '@/lib/db';
 import { buildGoogleCalendarUrl } from '@/lib/calendar';
 import AppHeader from '@/components/AppHeader';
+import PageBody from '@/components/PageBody';
 import AuditionForm from '@/components/AuditionForm';
 import DeleteAuditionButton from '@/components/DeleteAuditionButton';
 
@@ -32,7 +33,7 @@ export default async function AuditionDetailPage({
   return (
     <>
       <AppHeader title={title} backHref="/auditions" backLabel="Auditions" />
-      <div className="mx-auto max-w-3xl space-y-4 px-4 py-6">
+      <PageBody className="space-y-4">
         {audition.audition_date && (
           <div className="flex flex-wrap gap-2">
             <a
@@ -54,7 +55,7 @@ export default async function AuditionDetailPage({
 
         {script && (
           <div className="rounded-lg border border-stage-border bg-stage-panel p-4">
-            <div className="text-xs uppercase tracking-wide text-slate-500">Sides attached</div>
+            <div className="text-xs uppercase tracking-wide text-stage-subtle">Sides attached</div>
             <Link
               href={`/scripts/${script.id}`}
               className="text-sm text-stage-accent underline"
@@ -69,7 +70,7 @@ export default async function AuditionDetailPage({
         <div className="text-right">
           <DeleteAuditionButton auditionId={audition.id} />
         </div>
-      </div>
+      </PageBody>
     </>
   );
 }

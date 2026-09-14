@@ -32,13 +32,13 @@ export default function CueCardDrill({ lines }: { lines: ScriptLine[] }) {
 
   return (
     <div className="space-y-3 rounded-lg border border-stage-border bg-stage-panel p-5">
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-stage-muted">
         Card {index + 1} of {items.length}
       </p>
       {item.cue && (
         <div>
           <div className="mb-1 flex items-center justify-between">
-            <div className="text-xs uppercase text-slate-500">Cue</div>
+            <div className="text-xs uppercase text-stage-subtle">Cue</div>
             {isSupported && (
               <SpeakButton
                 isSpeaking={speakingId === cueId}
@@ -47,17 +47,17 @@ export default function CueCardDrill({ lines }: { lines: ScriptLine[] }) {
               />
             )}
           </div>
-          <p className="text-slate-300">{item.cue}</p>
+          <p className="text-stage-muted">{item.cue}</p>
         </div>
       )}
       <div>
-        <div className="text-xs uppercase text-slate-500">Your line</div>
+        <div className="text-xs uppercase text-stage-subtle">Your line</div>
         {revealed ? (
           <p className="text-stage-accent">{item.yourLine}</p>
         ) : (
           <button
             onClick={() => setRevealed(true)}
-            className="w-full rounded bg-black/30 px-3 py-2 text-left text-slate-500"
+            className="w-full rounded bg-stage-panel2 px-3 py-2 text-left text-stage-subtle"
           >
             Tap to reveal
           </button>

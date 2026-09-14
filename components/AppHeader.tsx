@@ -1,69 +1,51 @@
-'use client';
-
 import Link from 'next/link';
-import LogoutButton from './LogoutButton';
-import ThemePicker from './ThemePicker';
-import { useNavDrawer } from './NavContext';
+import Icon from './Icon';
 
+/**
+ * Page header.
+ *
+ * Title is left-aligned and actions sit on the right — it used to be centred
+ * with Log out next to it, which read like a title bar rather than a page
+ * header and put a sign-out control where page controls belong. Sign out now
+ * lives only in the sidebar footer.
+ *
+ * No hamburger button: mobile navigation is the bottom tab bar.
+ */
 export default function AppHeader({
   title,
   subtitle,
   backHref,
   backLabel,
+  actions,
 }: {
   title: string;
   subtitle?: string;
   backHref?: string;
   backLabel?: string;
+  /** Page-specific controls, rendered at the right of the header. */
+  actions?: React.ReactNode;
 }) {
-  const { toggle } = useNavDrawer();
-
   return (
-    <header className="no-print sticky top-0 z-20 border-b border-stage-border bg-stage-bg/95 backdrop-blur">
-      <div className="mx-auto flex max-w-3xl items-center gap-1 px-3 py-3">
-        <button
-          onClick={toggle}
-          aria-label="Open menu"
-          className="-ml-1 flex h-10 w-10 shrink-0 items-center justify-center rounded text-slate-300 hover:text-stage-accent md:hidden"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          >
-            <path d="M4 7h16M4 12h16M4 17h16" />
-          </svg>
-        </button>
+    <header className="no-print sticky top-0 z-20 border-b border-stage-border bg-stage-bg/90 backdrop-blur">
+      <div className="mx-auto flex h-14 max-w-4xl items-center gap-2 px-4 sm:px-6">
         {backHref && (
           <Link
             href={backHref}
             aria-label={backLabel ? `Back to ${backLabel}` : 'Back'}
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded text-slate-300 hover:text-stage-accent"
+            className="-ml-2 flex h-9 w-9 shrink-0 items-center justify-center rounded text-stage-muted transition-colors hover:bg-stage-panel2 hover:text-stage-text"
           >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
+            <Icon name="chevronLeft" size={18} strokeWidth={2} />
           </Link>
         )}
         <div className="min-w-0 flex-1">
-          <div className="truncate text-base font-semibold text-stage-accent">{title}</div>
-          {subtitle && <div className="truncate text-xs text-slate-400">{subtitle}</div>}
+          <h1 className="truncate text-[15px] font-semibold tracking-tight text-stage-text">
+            {title}
+          </h1>
+          {subtitle && (
+            <p className="truncate text-xs text-stage-muted">{subtitle}</p>
+          )}
         </div>
-        <LogoutButton />
-        <ThemePicker />
+        {actions && <div className="flex shrink-0 items-center gap-1">{actions}</div>}
       </div>
     </header>
   );

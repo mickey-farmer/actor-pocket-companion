@@ -67,14 +67,14 @@ export default function ChatPanel({
 
   return (
     <div className="flex h-[55dvh] flex-col rounded-lg border border-stage-border bg-stage-panel md:h-[65vh]">
-      <div className="border-b border-stage-border px-4 py-2 text-xs text-slate-400">
+      <div className="border-b border-stage-border px-4 py-2 text-xs text-stage-muted">
         This chat only discusses this scene and character — not general
         writing help.
       </div>
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
-        {loadingHistory && <p className="text-sm text-slate-500">Loading…</p>}
+        {loadingHistory && <p className="text-sm text-stage-subtle">Loading…</p>}
         {!loadingHistory && messages.length === 0 && (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-stage-subtle">
             Say hello, or ask where to start — your coach will pick up from the
             moment before.
           </p>
@@ -85,16 +85,16 @@ export default function ChatPanel({
             className={`max-w-[85%] rounded-lg px-3 py-2 text-sm ${
               m.role === 'user'
                 ? 'ml-auto bg-stage-accent text-stage-onAccent'
-                : 'bg-black/20 text-slate-100'
+                : 'bg-stage-panel2 text-stage-text'
             }`}
           >
             {m.content}
           </div>
         ))}
-        {loading && <p className="text-sm text-slate-500">Your coach is thinking…</p>}
+        {loading && <p className="text-sm text-stage-subtle">Your coach is thinking…</p>}
         <div ref={bottomRef} />
       </div>
-      {error && <p className="px-4 pb-1 text-sm text-red-400">{error}</p>}
+      {error && <p className="px-4 pb-1 text-sm text-stage-danger">{error}</p>}
       <div className="flex gap-2 border-t border-stage-border p-3">
         <input
           value={input}
@@ -106,7 +106,7 @@ export default function ChatPanel({
             }
           }}
           placeholder="Talk with your scene coach…"
-          className="flex-1 rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent"
+          className="flex-1 rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-stage-text outline-none focus:border-stage-accent"
         />
         <button
           onClick={send}

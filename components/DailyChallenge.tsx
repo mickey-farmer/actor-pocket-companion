@@ -84,12 +84,12 @@ export default function DailyChallenge() {
   }
 
   if (loading) {
-    return <p className="px-1 py-4 text-sm text-slate-400">Loading today’s challenge…</p>;
+    return <p className="px-1 py-4 text-sm text-stage-muted">Loading today’s challenge…</p>;
   }
 
   if (error && !state) {
     return (
-      <div className="rounded border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+      <div className="rounded border border-stage-danger/40 bg-stage-danger/10 px-4 py-3 text-sm text-stage-danger">
         {error}
       </div>
     );
@@ -102,7 +102,7 @@ export default function DailyChallenge() {
     <div className="space-y-5">
       <div className="flex items-center justify-between rounded border border-stage-border bg-stage-panel px-4 py-3">
         <div>
-          <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div className="text-xs font-semibold uppercase tracking-wide text-stage-subtle">
             Current streak
           </div>
           <div className="text-2xl font-semibold text-stage-accent">
@@ -121,13 +121,13 @@ export default function DailyChallenge() {
               {categoryLabel(challenge.category)}
             </span>
             {challenge.duration_minutes && (
-              <span className="text-xs text-slate-500">~{challenge.duration_minutes} min</span>
+              <span className="text-xs text-stage-subtle">~{challenge.duration_minutes} min</span>
             )}
           </div>
-          <h2 className="mb-2 text-lg font-semibold text-slate-100">{challenge.title}</h2>
-          <p className="whitespace-pre-wrap text-sm text-slate-300">{challenge.prompt_text}</p>
+          <h2 className="mb-2 text-lg font-semibold text-stage-text">{challenge.title}</h2>
+          <p className="whitespace-pre-wrap text-sm text-stage-muted">{challenge.prompt_text}</p>
 
-          {error && <p className="mt-3 text-sm text-red-400">{error}</p>}
+          {error && <p className="mt-3 text-sm text-stage-danger">{error}</p>}
 
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <button
@@ -135,7 +135,7 @@ export default function DailyChallenge() {
               disabled={isDone || completing}
               className={`rounded px-3 py-2 text-sm font-medium ${
                 isDone
-                  ? 'bg-emerald-500/20 text-emerald-400'
+                  ? 'bg-stage-success/20 text-stage-success'
                   : 'bg-stage-accent text-stage-onAccent disabled:opacity-60'
               }`}
             >
@@ -144,7 +144,7 @@ export default function DailyChallenge() {
             <button
               onClick={handleRefresh}
               disabled={refreshing}
-              className="rounded border border-stage-border px-3 py-2 text-sm text-slate-300 hover:bg-stage-bg disabled:opacity-60"
+              className="rounded border border-stage-border px-3 py-2 text-sm text-stage-muted hover:bg-stage-bg disabled:opacity-60"
             >
               {refreshing ? 'Generating…' : 'Give me a different one'}
             </button>
@@ -154,19 +154,19 @@ export default function DailyChallenge() {
 
       {state && state.history.length > 1 && (
         <div>
-          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-stage-subtle">
             Recent history
           </div>
           <ul className="space-y-1">
             {state.history.map((h) => (
               <li
                 key={h.id}
-                className="flex items-center justify-between rounded px-2 py-1.5 text-sm text-slate-400"
+                className="flex items-center justify-between rounded px-2 py-1.5 text-sm text-stage-muted"
               >
                 <span className="truncate">
                   {h.challenge_date} — {h.title}
                 </span>
-                <span className={h.completed_at ? 'text-emerald-400' : 'text-slate-600'}>
+                <span className={h.completed_at ? 'text-stage-success' : 'text-stage-subtle'}>
                   {h.completed_at ? '✓' : '—'}
                 </span>
               </li>

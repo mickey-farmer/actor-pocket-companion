@@ -1,4 +1,47 @@
+import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
 import { ensurePdfGlobals } from './pdfGlobals';
+
+const WORKER_SUBPATH = 'pdfjs-dist/legacy/build/pdf.worker.mjs';
+
+/**
+ * Locates pdf.worker.mjs on disk and hands pdfjs an absolute file:// URL for
+ * it.
+ *
+ * In Node, pdfjs has no real Worker, so it falls back to a "fake worker":
+ * it dynamically imports the worker module and runs it in-process. Left to
+ * its own devices it derives that path relative to pdf.mjs, and the import
+ * is computed rather than literal — which means Next.js's output file
+ * tracing can't see it, so the worker file is never copied into the
+ * serverless bundle. On Vercel that surfaces as:
+ *
+ *   Setting up fake worker failed: "Cannot find module
+ *   '/var/task/node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs'"
+ *
+ * Resolving it explicitly fixes the *path*; `outputFileTracingIncludes` in
+ * next.config.js is what actually gets the file deployed. Both are required
+ * — neither alone is sufficient.
+ */
+function resolveWorkerSrc(): string | null {
+  // Try the project root first (where node_modules lives at runtime), then
+  // this module's own location, which covers layouts where the app is
+  // nested or symlinked. __filename only exists when this compiles to CJS,
+  // and referencing it bare in an ESM build would throw a ReferenceError
+  // here rather than inside the try below — hence the typeof guard.
+  const bases = [
+    `${process.cwd()}/`,
+    typeof __filename !== 'undefined' ? __filename : null,
+  ].filter((b): b is string => b !== null);
+
+  for (const base of bases) {
+    try {
+      return pathToFileURL(createRequire(base).resolve(WORKER_SUBPATH)).href;
+    } catch {
+      // Try the next base.
+    }
+  }
+  return null;
+}
 
 // pdf-parse bundles a 2018-era build of PDF.js that fails to read many
 // perfectly valid modern PDFs (anything saved by Word, Google Docs, Preview,
@@ -11,7 +54,15 @@ export async function parsePdf(buffer: Buffer): Promise<string> {
   // the import itself throws "DOMMatrix is not defined". See pdfGlobals.ts.
   await ensurePdfGlobals();
 
-  const { getDocument } = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const { getDocument, GlobalWorkerOptions } = await import(
+    'pdfjs-dist/legacy/build/pdf.mjs'
+  );
+
+  // Must be set before getDocument(). See resolveWorkerSrc() above.
+  if (!GlobalWorkerOptions.workerSrc) {
+    const workerSrc = resolveWorkerSrc();
+    if (workerSrc) GlobalWorkerOptions.workerSrc = workerSrc;
+  }
 
   const loadingTask = getDocument({
     data: new Uint8Array(buffer),

@@ -39,7 +39,7 @@ export default function MemorizeTabs({
             className={`rounded px-3 py-2 text-sm ${
               mode === m.id
                 ? 'bg-stage-accent text-stage-onAccent'
-                : 'border border-stage-border text-slate-400 hover:border-stage-accent'
+                : 'border border-stage-border text-stage-muted hover:border-stage-accent'
             }`}
           >
             {m.label}
@@ -48,7 +48,7 @@ export default function MemorizeTabs({
       </div>
 
       {!hasCharacterLines ? (
-        <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-slate-400">
+        <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-stage-muted">
           We didn&apos;t find any lines for &quot;{character}&quot; in this scene.
           Scene/line detection is heuristic — if this looks wrong, double-check
           the character name matches exactly what&apos;s in the script.

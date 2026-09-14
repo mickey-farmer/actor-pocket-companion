@@ -2,10 +2,10 @@ import type { AuditionStatus } from '@/lib/types';
 
 const STYLES: Record<AuditionStatus, string> = {
   upcoming: 'bg-stage-accent/20 text-stage-accent',
-  submitted: 'bg-slate-500/20 text-slate-300',
-  callback: 'bg-amber-500/20 text-amber-400',
-  booked: 'bg-emerald-500/20 text-emerald-400',
-  passed: 'bg-slate-700/40 text-slate-500',
+  submitted: 'bg-stage-borderStrong/20 text-stage-muted',
+  callback: 'bg-stage-warning/20 text-stage-warning',
+  booked: 'bg-stage-success/20 text-stage-success',
+  passed: 'bg-stage-panel2/40 text-stage-subtle',
 };
 
 const LABELS: Record<AuditionStatus, string> = {

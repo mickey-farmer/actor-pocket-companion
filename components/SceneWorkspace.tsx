@@ -65,7 +65,7 @@ export default function SceneWorkspace({
         backLabel={scriptTitle}
       />
 
-      <div className="mx-auto max-w-3xl space-y-4 px-4 py-6 pb-24 md:pb-6">
+      <div className="mx-auto max-w-4xl space-y-4 px-4 py-6 sm:px-6">
         {sceneNav.length > 1 && (
           <div className="no-print">
             <label htmlFor="scene-select" className="sr-only">
@@ -95,7 +95,7 @@ export default function SceneWorkspace({
               className={`px-3 py-2 text-sm ${
                 tab === t.id
                   ? 'border-b-2 border-stage-accent text-stage-accent'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : 'text-stage-muted hover:text-stage-text'
               }`}
             >
               {t.label}
@@ -137,7 +137,7 @@ export default function SceneWorkspace({
             key={t.id}
             onClick={() => setTab(t.id)}
             className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs ${
-              tab === t.id ? 'text-stage-accent' : 'text-slate-400'
+              tab === t.id ? 'text-stage-accent' : 'text-stage-muted'
             }`}
           >
             <span

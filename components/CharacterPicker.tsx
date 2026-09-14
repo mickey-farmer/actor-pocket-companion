@@ -43,7 +43,7 @@ export default function CharacterPicker({
       <h2 className="text-lg font-medium text-stage-accent">
         What is your character?
       </h2>
-      <p className="mt-1 text-sm text-slate-400">
+      <p className="mt-1 text-sm text-stage-muted">
         Pick from what we found in the script, or type your character&apos;s name if
         we missed it.
       </p>
@@ -69,7 +69,7 @@ export default function CharacterPicker({
           value={custom}
           onChange={(e) => setCustom(e.target.value)}
           placeholder="Type a character name"
-          className="flex-1 rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent"
+          className="flex-1 rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-stage-text outline-none focus:border-stage-accent"
         />
         <button
           disabled={loading || !custom.trim()}
@@ -79,7 +79,7 @@ export default function CharacterPicker({
           Use this
         </button>
       </div>
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && <p className="mt-2 text-sm text-stage-danger">{error}</p>}
     </div>
   );
 }

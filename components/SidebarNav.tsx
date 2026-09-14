@@ -5,8 +5,27 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { AuditionRow, SceneRow, ScriptRow } from '@/lib/types';
 import { formatAuditionDate } from '@/lib/dateInput';
+import Icon from './Icon';
+import { NAV_ITEMS, isNavItemActive } from './navItems';
 
 const MAX_SIDEBAR_AUDITIONS = 4;
+
+function SectionLabel({
+  children,
+  action,
+}: {
+  children: React.ReactNode;
+  action?: React.ReactNode;
+}) {
+  return (
+    <div className="mb-1 mt-5 flex items-center justify-between gap-2 px-2.5">
+      <span className="text-[11px] font-semibold uppercase tracking-wider text-stage-subtle">
+        {children}
+      </span>
+      {action}
+    </div>
+  );
+}
 
 export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
@@ -36,10 +55,7 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
   }, [pathname]);
 
   const upcomingAuditions = useMemo(
-    () =>
-      auditions
-        .filter((a) => a.status !== 'passed')
-        .slice(0, MAX_SIDEBAR_AUDITIONS),
+    () => auditions.filter((a) => a.status !== 'passed').slice(0, MAX_SIDEBAR_AUDITIONS),
     [auditions]
   );
 
@@ -80,86 +96,99 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
   }
 
   return (
-    <nav className="flex-1 overflow-y-auto px-2 py-3">
-      <Link
-        href="/challenge"
-        onClick={onNavigate}
-        className={`mb-3 flex items-center gap-2 rounded px-2 py-2 text-sm font-medium ${
-          pathname === '/challenge'
-            ? 'bg-stage-accent/20 text-stage-accent'
-            : 'text-slate-300 hover:bg-stage-bg/60'
-        }`}
+    <nav aria-label="Sidebar" className="flex-1 overflow-y-auto px-2 py-3">
+      {/* Primary destinations — same set as the mobile tab bar, from
+          navItems.ts, so the two can't drift apart. */}
+      <ul className="space-y-0.5">
+        {NAV_ITEMS.map((item) => {
+          const active = isNavItemActive(item.href, pathname);
+          return (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                onClick={onNavigate}
+                aria-current={active ? 'page' : undefined}
+                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? 'bg-stage-accentSoft/15 text-stage-accent'
+                    : 'text-stage-muted hover:bg-stage-panel2 hover:text-stage-text'
+                }`}
+              >
+                <Icon name={item.icon} size={17} strokeWidth={active ? 2 : 1.75} />
+                {item.label}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Script tree — the reason the desktop sidebar earns its width. Lets
+          you jump straight to a scene without going back through the list. */}
+      <SectionLabel
+        action={
+          <Link
+            href="/scripts"
+            onClick={onNavigate}
+            aria-label="Add a script"
+            className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
+          >
+            <Icon name="plus" size={15} strokeWidth={2} />
+          </Link>
+        }
       >
-        <span aria-hidden="true">{'\u{1F525}'}</span>
-        Today&apos;s Challenge
-      </Link>
+        Library
+      </SectionLabel>
 
-      <div className="mb-1 flex items-center justify-between px-2">
-        <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-          Scripts
-        </span>
-        <Link
-          href="/scripts"
-          onClick={onNavigate}
-          className="text-xs text-stage-accent hover:underline"
-        >
-          + Add
-        </Link>
-      </div>
-
-      {loading && <p className="px-2 py-1 text-xs text-slate-500">Loading…</p>}
+      {loading && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
       {!loading && scripts.length === 0 && (
-        <p className="px-2 py-1 text-xs text-slate-500">No scripts yet.</p>
+        <p className="px-2.5 py-1 text-xs text-stage-subtle">No scripts yet.</p>
       )}
 
       <ul className="space-y-0.5">
         {scripts.map((s) => {
           const expanded = isExpanded(s.id);
           const scriptActive = pathname === `/scripts/${s.id}`;
+          const scenes = scenesByScript[s.id] ?? [];
           return (
             <li key={s.id}>
               <div
-                className={`flex items-center gap-1 rounded px-1 py-1.5 ${
-                  scriptActive ? 'bg-stage-bg text-stage-accent' : 'hover:bg-stage-bg/60'
+                className={`flex items-center rounded transition-colors ${
+                  scriptActive
+                    ? 'bg-stage-accentSoft/15 text-stage-accent'
+                    : 'text-stage-muted hover:bg-stage-panel2'
                 }`}
               >
                 <button
                   onClick={() => toggle(s.id)}
-                  aria-label={expanded ? 'Collapse scenes' : 'Expand scenes'}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center text-slate-400"
+                  aria-label={expanded ? `Collapse ${s.title}` : `Expand ${s.title}`}
+                  aria-expanded={expanded}
+                  className="flex h-8 w-7 shrink-0 items-center justify-center text-stage-subtle hover:text-stage-text"
                 >
-                  <svg
-                    width="12"
-                    height="12"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
+                  <Icon
+                    name="chevronRight"
+                    size={13}
+                    strokeWidth={2.5}
                     className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
-                  >
-                    <path d="M9 6l6 6-6 6" />
-                  </svg>
+                  />
                 </button>
                 <Link
                   href={`/scripts/${s.id}`}
                   onClick={onNavigate}
-                  className="min-w-0 flex-1 truncate py-1 text-sm"
+                  className="min-w-0 flex-1 truncate py-1.5 pr-2 text-sm"
                 >
                   {s.title}
                 </Link>
               </div>
 
               {expanded && (
-                <ul className="ml-6 space-y-0.5 border-l border-stage-border pl-2">
+                <ul className="ml-[1.3rem] space-y-px border-l border-stage-border pl-2">
                   {loadingScenes[s.id] && (
-                    <li className="py-1 text-xs text-slate-500">Loading scenes…</li>
+                    <li className="py-1 pl-2 text-xs text-stage-subtle">Loading scenes…</li>
                   )}
-                  {!loadingScenes[s.id] && (scenesByScript[s.id] ?? []).length === 0 && (
-                    <li className="py-1 text-xs text-slate-500">No scenes found.</li>
+                  {!loadingScenes[s.id] && scenes.length === 0 && (
+                    <li className="py-1 pl-2 text-xs text-stage-subtle">No scenes found.</li>
                   )}
-                  {(scenesByScript[s.id] ?? []).map((scene) => {
+                  {scenes.map((scene) => {
                     const href = `/scripts/${s.id}/scenes/${scene.id}`;
                     const active = pathname === href;
                     return (
@@ -167,13 +196,17 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
                         <Link
                           href={href}
                           onClick={onNavigate}
-                          className={`block truncate rounded px-2 py-1.5 text-xs ${
+                          aria-current={active ? 'page' : undefined}
+                          className={`block truncate rounded px-2 py-1.5 text-xs transition-colors ${
                             active
-                              ? 'bg-stage-bg text-stage-accent'
-                              : 'text-slate-400 hover:text-slate-200'
+                              ? 'bg-stage-accentSoft/15 font-medium text-stage-accent'
+                              : 'text-stage-subtle hover:bg-stage-panel2 hover:text-stage-text'
                           }`}
                         >
-                          {scene.scene_index + 1}. {scene.heading}
+                          <span className="tabular-nums text-stage-subtle">
+                            {scene.scene_index + 1}.
+                          </span>{' '}
+                          {scene.heading}
                         </Link>
                       </li>
                     );
@@ -185,78 +218,63 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
         })}
       </ul>
 
-      <div className="mt-4 border-t border-stage-border pt-3">
-        <div className="mb-1 flex items-center justify-between px-2">
-          <Link
-            href="/auditions"
-            onClick={onNavigate}
-            className={`text-xs font-semibold uppercase tracking-wide ${
-              pathname === '/auditions' ? 'text-stage-accent' : 'text-slate-500 hover:text-slate-300'
-            }`}
-          >
-            Auditions
-          </Link>
+      <SectionLabel
+        action={
           <Link
             href="/auditions/new"
             onClick={onNavigate}
-            className="text-xs text-stage-accent hover:underline"
+            aria-label="Add an audition"
+            className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
           >
-            + New
+            <Icon name="plus" size={15} strokeWidth={2} />
           </Link>
-        </div>
+        }
+      >
+        Upcoming
+      </SectionLabel>
 
-        {loadingAuditions && <p className="px-2 py-1 text-xs text-slate-500">Loading…</p>}
-        {!loadingAuditions && upcomingAuditions.length === 0 && (
-          <p className="px-2 py-1 text-xs text-slate-500">Nothing tracked yet.</p>
-        )}
+      {loadingAuditions && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
+      {!loadingAuditions && upcomingAuditions.length === 0 && (
+        <p className="px-2.5 py-1 text-xs text-stage-subtle">Nothing tracked yet.</p>
+      )}
 
-        <ul className="space-y-0.5">
-          {upcomingAuditions.map((a) => {
-            const href = `/auditions/${a.id}`;
-            const active = pathname === href;
-            return (
-              <li key={a.id}>
-                <Link
-                  href={href}
-                  onClick={onNavigate}
-                  className={`block truncate rounded px-2 py-1.5 text-xs ${
-                    active ? 'bg-stage-bg text-stage-accent' : 'text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <span className="block truncate">{a.project}</span>
-                  <span className="block truncate text-[11px] text-slate-500">
-                    {formatAuditionDate(a.audition_date)}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      <ul className="space-y-0.5">
+        {upcomingAuditions.map((a) => {
+          const href = `/auditions/${a.id}`;
+          const active = pathname === href;
+          return (
+            <li key={a.id}>
+              <Link
+                href={href}
+                onClick={onNavigate}
+                aria-current={active ? 'page' : undefined}
+                className={`block rounded px-2.5 py-1.5 transition-colors ${
+                  active
+                    ? 'bg-stage-accentSoft/15 text-stage-accent'
+                    : 'hover:bg-stage-panel2'
+                }`}
+              >
+                <span className="block truncate text-xs font-medium text-stage-muted">
+                  {a.project}
+                </span>
+                <span className="block truncate text-[11px] text-stage-subtle">
+                  {formatAuditionDate(a.audition_date)}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
 
-        {auditions.length > MAX_SIDEBAR_AUDITIONS && (
-          <Link
-            href="/auditions"
-            onClick={onNavigate}
-            className="mt-1 block px-2 py-1 text-xs text-stage-accent hover:underline"
-          >
-            View all
-          </Link>
-        )}
-      </div>
-
-      <div className="mt-4 border-t border-stage-border pt-3">
+      {auditions.length > MAX_SIDEBAR_AUDITIONS && (
         <Link
-          href="/memorize"
+          href="/auditions"
           onClick={onNavigate}
-          className={`block rounded px-2 py-2 text-sm font-medium ${
-            pathname === '/memorize'
-              ? 'bg-stage-bg text-stage-accent'
-              : 'text-slate-300 hover:bg-stage-bg/60'
-          }`}
+          className="mt-1 block px-2.5 py-1 text-xs text-stage-accent hover:underline"
         >
-          Memorize
+          View all {auditions.length}
         </Link>
-      </div>
+      )}
     </nav>
   );
 }

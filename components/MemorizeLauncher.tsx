@@ -34,12 +34,12 @@ export default function MemorizeLauncher() {
   }
 
   if (loading) {
-    return <p className="text-sm text-slate-500">Loading your scripts…</p>;
+    return <p className="text-sm text-stage-subtle">Loading your scripts…</p>;
   }
 
   if (scripts.length === 0) {
     return (
-      <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-slate-400">
+      <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-stage-muted">
         No scripts yet —{' '}
         <Link href="/scripts" className="text-stage-accent underline">
           upload one from the library
@@ -52,7 +52,7 @@ export default function MemorizeLauncher() {
   if (!selected) {
     return (
       <div className="space-y-3">
-        <p className="text-sm text-slate-400">Pick a script to drill lines from:</p>
+        <p className="text-sm text-stage-muted">Pick a script to drill lines from:</p>
         <ul className="space-y-2">
           {scripts.map((s) => (
             <li key={s.id}>
@@ -61,7 +61,7 @@ export default function MemorizeLauncher() {
                 className="block w-full rounded border border-stage-border bg-stage-panel px-4 py-3 text-left hover:border-stage-accent"
               >
                 <div className="font-medium">{s.title}</div>
-                <div className="text-xs text-slate-400">
+                <div className="text-xs text-stage-muted">
                   {s.character ? `Playing ${s.character}` : 'Character not set yet'}
                 </div>
               </button>
@@ -76,7 +76,7 @@ export default function MemorizeLauncher() {
     return (
       <div className="space-y-3">
         <BackButton onClick={() => setSelected(null)} />
-        <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-slate-400">
+        <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center text-sm text-stage-muted">
           You haven&apos;t picked a character for &quot;{selected.title}&quot; yet.{' '}
           <Link href={`/scripts/${selected.id}`} className="text-stage-accent underline">
             Set that first
@@ -90,11 +90,11 @@ export default function MemorizeLauncher() {
   return (
     <div className="space-y-3">
       <BackButton onClick={() => setSelected(null)} />
-      <p className="text-sm text-slate-400">
+      <p className="text-sm text-stage-muted">
         Pick a scene from &quot;{selected.title}&quot; (playing {selected.character}):
       </p>
       {loadingScenes ? (
-        <p className="text-sm text-slate-500">Loading scenes…</p>
+        <p className="text-sm text-stage-subtle">Loading scenes…</p>
       ) : (
         <ul className="space-y-2">
           {scenes.map((scene) => (
@@ -117,7 +117,7 @@ export default function MemorizeLauncher() {
 
 function BackButton({ onClick }: { onClick: () => void }) {
   return (
-    <button onClick={onClick} className="text-xs text-slate-400 underline hover:text-slate-200">
+    <button onClick={onClick} className="text-xs text-stage-muted underline hover:text-stage-text">
       ← Choose a different script
     </button>
   );

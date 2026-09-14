@@ -9,7 +9,7 @@ export default function HighlightedReadThrough({ lines }: { lines: ScriptLine[] 
 
   return (
     <div className="space-y-2 rounded-lg border border-stage-border bg-stage-panel p-4">
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-stage-muted">
         Your lines are highlighted for read-aloud practice. Tap 🔊 on anyone
         else&apos;s line to hear it spoken.
       </p>
@@ -19,7 +19,7 @@ export default function HighlightedReadThrough({ lines }: { lines: ScriptLine[] 
         return (
           <div key={i} className="text-sm">
             {line.speaker && (
-              <div className="text-xs uppercase tracking-wide text-slate-500">
+              <div className="text-xs uppercase tracking-wide text-stage-subtle">
                 {line.speaker}
               </div>
             )}
@@ -29,8 +29,8 @@ export default function HighlightedReadThrough({ lines }: { lines: ScriptLine[] 
                   line.isCharacterLine
                     ? 'bg-stage-accent/20 text-stage-accent'
                     : line.speaker
-                    ? 'text-slate-300'
-                    : 'italic text-slate-500'
+                    ? 'text-stage-muted'
+                    : 'italic text-stage-subtle'
                 }`}
               >
                 {line.text}

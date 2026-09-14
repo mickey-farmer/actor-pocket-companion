@@ -61,14 +61,14 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
 
   return (
     <div className="space-y-3 rounded-lg border border-stage-border bg-stage-panel p-5">
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-stage-muted">
         Line {index + 1} of {items.length} — type your line from memory, then
         check.
       </p>
       {item.cue && (
         <div>
           <div className="mb-1 flex items-center justify-between">
-            <div className="text-xs uppercase text-slate-500">Cue</div>
+            <div className="text-xs uppercase text-stage-subtle">Cue</div>
             {isSupported && (
               <SpeakButton
                 isSpeaking={speakingId === cueId}
@@ -77,7 +77,7 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
               />
             )}
           </div>
-          <p className="text-slate-300">{item.cue}</p>
+          <p className="text-stage-muted">{item.cue}</p>
         </div>
       )}
       <textarea
@@ -85,7 +85,7 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
         onChange={(e) => setAttempt(e.target.value)}
         rows={3}
         placeholder="Type your line, or tap the mic and say it aloud…"
-        className="w-full rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent"
+        className="w-full rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-stage-text outline-none focus:border-stage-accent"
       />
       {micSupported && (
         <div className="flex items-center gap-2">
@@ -94,13 +94,13 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
             onClick={() => (isListening ? stopListening() : speakYourAttempt())}
             className={`flex items-center gap-1.5 rounded px-3 py-2 text-sm ${
               isListening
-                ? 'bg-red-500/20 text-red-400'
-                : 'border border-stage-border text-slate-300 hover:border-stage-accent hover:text-stage-accent'
+                ? 'bg-stage-danger/20 text-stage-danger'
+                : 'border border-stage-border text-stage-muted hover:border-stage-accent hover:text-stage-accent'
             }`}
           >
             {isListening ? '● Listening…' : '🎤 Say your line'}
           </button>
-          {micError && <span className="text-xs text-red-400">{micError}</span>}
+          {micError && <span className="text-xs text-stage-danger">{micError}</span>}
         </div>
       )}
       <div className="flex items-center gap-3">
@@ -115,10 +115,10 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
           <span
             className={`text-sm ${
               result.accuracy >= 85
-                ? 'text-green-400'
+                ? 'text-stage-success'
                 : result.accuracy >= 60
-                ? 'text-yellow-400'
-                : 'text-red-400'
+                ? 'text-stage-warning'
+                : 'text-stage-danger'
             }`}
           >
             {result.accuracy}% match
@@ -126,8 +126,8 @@ export default function SelfQuiz({ lines }: { lines: ScriptLine[] }) {
         )}
       </div>
       {result && (
-        <div className="rounded border border-stage-border bg-black/20 p-3 text-sm">
-          <div className="text-xs uppercase text-slate-500">Script line</div>
+        <div className="rounded border border-stage-border bg-stage-panel2 p-3 text-sm">
+          <div className="text-xs uppercase text-stage-subtle">Script line</div>
           <p>{item.yourLine}</p>
         </div>
       )}

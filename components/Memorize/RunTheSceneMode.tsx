@@ -111,7 +111,7 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
 
   return (
     <div className="space-y-3 rounded-lg border border-stage-border bg-stage-panel p-4">
-      <p className="text-xs text-slate-400">
+      <p className="text-xs text-stage-muted">
         Your scene partner&apos;s lines are read aloud, and it pauses on yours
         so you can say them before it moves on — hands-free rehearsal.
       </p>
@@ -134,7 +134,7 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
         )}
         <button
           onClick={restart}
-          className="rounded border border-stage-border px-3 py-2 text-sm text-slate-400"
+          className="rounded border border-stage-border px-3 py-2 text-sm text-stage-muted"
         >
           ↺ Restart
         </button>
@@ -147,7 +147,7 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
               className={`rounded px-2 py-1 text-xs ${
                 speed === s.value
                   ? 'bg-stage-accent text-stage-onAccent'
-                  : 'border border-stage-border text-slate-400'
+                  : 'border border-stage-border text-stage-muted'
               }`}
             >
               {s.label}
@@ -156,7 +156,7 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-xs text-slate-400">
+      <label className="flex items-center gap-2 text-xs text-stage-muted">
         <input
           type="checkbox"
           checked={hideMyLines}
@@ -166,13 +166,13 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
       </label>
 
       {!isSupported && (
-        <p className="rounded border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-300">
+        <p className="rounded border border-stage-warning/30 bg-stage-warning/10 px-3 py-2 text-xs text-stage-warning">
           This browser doesn&apos;t support text-to-speech, so partner lines
           won&apos;t be read aloud — but the auto-advance timing still works.
         </p>
       )}
 
-      <div className="max-h-[50vh] space-y-2 overflow-y-auto rounded border border-stage-border bg-black/20 p-3">
+      <div className="max-h-[50vh] space-y-2 overflow-y-auto rounded border border-stage-border bg-stage-panel2 p-3">
         {lines.map((line, i) => {
           const isActive = i === index;
           return (
@@ -184,7 +184,7 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
               }`}
             >
               {line.speaker && (
-                <div className="text-xs uppercase tracking-wide text-slate-500">
+                <div className="text-xs uppercase tracking-wide text-stage-subtle">
                   {line.speaker}
                 </div>
               )}
@@ -193,8 +193,8 @@ export default function RunTheSceneMode({ lines }: { lines: ScriptLine[] }) {
                   line.isCharacterLine
                     ? 'text-stage-accent'
                     : line.speaker
-                    ? 'text-slate-300'
-                    : 'italic text-slate-500'
+                    ? 'text-stage-muted'
+                    : 'italic text-stage-subtle'
                 }
               >
                 {line.isCharacterLine && hideMyLines ? '· · ·' : line.text}

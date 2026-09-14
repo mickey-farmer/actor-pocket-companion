@@ -41,7 +41,7 @@ export default function AnalysisPanel({
   if (!analysis) {
     return (
       <div className="rounded-lg border border-stage-border bg-stage-panel p-5 text-center">
-        <p className="mb-3 text-sm text-slate-400">
+        <p className="mb-3 text-sm text-stage-muted">
           No analysis yet for this scene. This reads the scene once and gives
           you a moment-before, given circumstances, and beat breakdown for
           your character.
@@ -53,7 +53,7 @@ export default function AnalysisPanel({
         >
           {loading ? 'Analyzing…' : 'Generate analysis'}
         </button>
-        {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+        {error && <p className="mt-2 text-sm text-stage-danger">{error}</p>}
       </div>
     );
   }
@@ -78,9 +78,9 @@ export default function AnalysisPanel({
         <ol className="space-y-2">
           {(analysis.beats ?? []).map((b) => (
             <li key={b.beatNumber} className="rounded border border-stage-border p-3">
-              <div className="text-xs uppercase text-slate-500">Beat {b.beatNumber}</div>
+              <div className="text-xs uppercase text-stage-subtle">Beat {b.beatNumber}</div>
               <div>{b.description}</div>
-              <div className="mt-1 text-sm text-stage-accent2">
+              <div className="mt-1 text-sm text-stage-muted">
                 Shift: {b.intentionShift}
               </div>
             </li>
@@ -88,11 +88,11 @@ export default function AnalysisPanel({
         </ol>
       </Section>
       <div className="flex items-center justify-between">
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-stage-danger">{error}</p>}
         <button
           onClick={() => generate(true)}
           disabled={loading}
-          className="ml-auto text-xs text-slate-400 underline hover:text-slate-200 disabled:opacity-50"
+          className="ml-auto text-xs text-stage-muted underline hover:text-stage-text disabled:opacity-50"
         >
           {loading ? 'Regenerating…' : 'Regenerate analysis'}
         </button>
@@ -118,10 +118,10 @@ function Section({
           : 'border-stage-border bg-stage-panel'
       }`}
     >
-      <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-slate-400">
+      <h3 className="mb-1 text-sm font-semibold uppercase tracking-wide text-stage-muted">
         {title}
       </h3>
-      <div className="text-sm leading-relaxed text-slate-100">{children}</div>
+      <div className="text-sm leading-relaxed text-stage-text">{children}</div>
     </div>
   );
 }
@@ -129,8 +129,8 @@ function Section({
 function Item({ label, value }: { label: string; value?: string }) {
   return (
     <div>
-      <dt className="text-xs uppercase text-slate-500">{label}</dt>
-      <dd className="text-sm text-slate-100">{value}</dd>
+      <dt className="text-xs uppercase text-stage-subtle">{label}</dt>
+      <dd className="text-sm text-stage-text">{value}</dd>
     </div>
   );
 }

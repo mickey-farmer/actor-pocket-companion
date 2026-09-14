@@ -38,9 +38,9 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-sm rounded-lg border border-stage-border bg-stage-panel p-6 shadow-sm"
+      className="w-full rounded-xl border border-stage-border bg-stage-panel p-6"
     >
-      <label className="mb-2 block text-sm text-slate-300" htmlFor="password">
+      <label className="mb-1.5 block text-xs font-medium text-stage-muted" htmlFor="password">
         Password
       </label>
       <input
@@ -49,13 +49,17 @@ export default function LoginForm() {
         autoFocus
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="w-full rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent"
+        className="w-full rounded-md border border-stage-border bg-stage-panel2 px-3 py-2 text-sm text-stage-text transition-colors hover:border-stage-borderStrong focus:border-stage-accent"
       />
-      {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+      {error && (
+        <p role="alert" className="mt-2 text-sm text-stage-danger">
+          {error}
+        </p>
+      )}
       <button
         type="submit"
         disabled={loading || !password}
-        className="mt-4 w-full rounded bg-stage-accent px-4 py-2 font-medium text-stage-onAccent disabled:opacity-50"
+        className="mt-4 w-full rounded-md bg-stage-accent px-4 py-2.5 text-sm font-semibold text-stage-onAccent transition-colors hover:bg-stage-accentHover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {loading ? 'Checking…' : 'Enter'}
       </button>

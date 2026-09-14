@@ -128,9 +128,16 @@ export async function createScript(input: {
 
 export async function listScripts(): Promise<ScriptRow[]> {
   await ensureSchema();
+  // Joins the scene count so the library list can show it without firing a
+  // query per row.
   const { rows } = await sql<ScriptRow>`
-    SELECT id, title, filename, format, character, source_audition_id, created_at
-    FROM scripts ORDER BY created_at DESC;
+    SELECT s.id, s.title, s.filename, s.format, s.character,
+           s.source_audition_id, s.created_at,
+           COUNT(sc.id)::int AS scene_count
+    FROM scripts s
+    LEFT JOIN scenes sc ON sc.script_id = s.id
+    GROUP BY s.id
+    ORDER BY s.created_at DESC;
   `;
   return rows as ScriptRow[];
 }

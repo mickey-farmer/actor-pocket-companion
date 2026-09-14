@@ -15,7 +15,7 @@ const STATUS_OPTIONS: { value: AuditionStatus; label: string }[] = [
 ];
 
 const inputClass =
-  'w-full rounded border border-stage-border bg-black/20 px-3 py-2 text-slate-100 outline-none focus:border-stage-accent';
+  'w-full rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-stage-text outline-none focus:border-stage-accent';
 
 export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
   const router = useRouter();
@@ -159,7 +159,7 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
       </Field>
       <Field label="Attach sides (optional)">
         {scriptId ? (
-          <div className="flex items-center justify-between gap-2 rounded border border-stage-border bg-black/20 px-3 py-2 text-sm">
+          <div className="flex items-center justify-between gap-2 rounded border border-stage-border bg-stage-panel2 px-3 py-2 text-sm">
             <div className="min-w-0 truncate">
               {attachedScript?.title ?? 'Attached script'}
               {attachedAsNewSide && (
@@ -175,7 +175,7 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
                 setAttachedAsNewSide(false);
                 setSidesMode('closed');
               }}
-              className="shrink-0 text-xs text-red-400 hover:underline"
+              className="shrink-0 text-xs text-stage-danger hover:underline"
             >
               Remove
             </button>
@@ -185,14 +185,14 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
             <button
               type="button"
               onClick={() => setSidesMode('existing')}
-              className="flex-1 rounded border border-stage-border px-3 py-2 text-sm text-slate-300 hover:border-stage-accent hover:text-stage-accent"
+              className="flex-1 rounded border border-stage-border px-3 py-2 text-sm text-stage-muted hover:border-stage-accent hover:text-stage-accent"
             >
               Choose existing script
             </button>
             <button
               type="button"
               onClick={() => setSidesMode('upload')}
-              className="flex-1 rounded border border-stage-border px-3 py-2 text-sm text-slate-300 hover:border-stage-accent hover:text-stage-accent"
+              className="flex-1 rounded border border-stage-border px-3 py-2 text-sm text-stage-muted hover:border-stage-accent hover:text-stage-accent"
             >
               Upload new
             </button>
@@ -219,13 +219,13 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
             <button
               type="button"
               onClick={() => setSidesMode('closed')}
-              className="text-xs text-slate-400 hover:underline"
+              className="text-xs text-stage-muted hover:underline"
             >
               Cancel
             </button>
           </div>
         ) : (
-          <div className="space-y-2 rounded border border-stage-border bg-black/10 p-3">
+          <div className="space-y-2 rounded border border-stage-border bg-stage-panel2 p-3">
             <UploadForm
               compact
               onUploaded={(id) => {
@@ -237,7 +237,7 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
             <button
               type="button"
               onClick={() => setSidesMode('closed')}
-              className="text-xs text-slate-400 hover:underline"
+              className="text-xs text-stage-muted hover:underline"
             >
               Cancel
             </button>
@@ -252,7 +252,7 @@ export default function AuditionForm({ existing }: { existing?: AuditionRow }) {
           className={inputClass}
         />
       </Field>
-      {error && <p className="text-sm text-red-400">{error}</p>}
+      {error && <p className="text-sm text-stage-danger">{error}</p>}
       <button
         type="submit"
         disabled={loading}
@@ -275,7 +275,7 @@ function Field({
 }) {
   return (
     <div>
-      <label className="mb-1 block text-sm text-slate-300">
+      <label className="mb-1 block text-sm text-stage-muted">
         {label}
         {required && ' *'}
       </label>

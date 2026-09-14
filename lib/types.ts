@@ -13,6 +13,9 @@ export interface ScriptRow {
   // Scripts library.
   source_audition_id: string | null;
   created_at: string;
+  // Populated only by listScripts(), which joins the scene count so the
+  // library can show it without a query per row.
+  scene_count?: number;
 }
 
 export interface SceneRow {
