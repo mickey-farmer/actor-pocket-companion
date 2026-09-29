@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { addChatMessage, getAnalysis, getScene, getScript, listChatMessages } from '@/lib/db';
+import {
+  addChatMessage,
+  clearChatMessages,
+  getAnalysis,
+  getScene,
+  getScript,
+  listChatMessages,
+} from '@/lib/db';
 import { buildChatSystemPrompt, toOpenRouterHistory } from '@/lib/prompts';
 import { openrouterChatCompletion } from '@/lib/openrouter';
 
@@ -70,4 +77,13 @@ export async function POST(
   });
 
   return NextResponse.json({ message: assistantRow });
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ scriptId: string; sceneId: string }> }
+) {
+  const { sceneId } = await params;
+  await clearChatMessages(sceneId);
+  return NextResponse.json({ ok: true });
 }

@@ -96,6 +96,19 @@ export function ensureSchema(): Promise<void> {
           created_at TIMESTAMPTZ NOT NULL DEFAULT now()
         );
       `;
+      // Conversations with the coach that aren't tied to one scene: the
+      // general chat (script_id NULL) and whole-script chats. Scene chats
+      // keep living in chat_messages.
+      await sql`
+        CREATE TABLE IF NOT EXISTS coach_messages (
+          id TEXT PRIMARY KEY,
+          script_id TEXT REFERENCES scripts(id) ON DELETE CASCADE,
+          role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
+          content TEXT NOT NULL,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        );
+      `;
+      await sql`CREATE INDEX IF NOT EXISTS idx_coach_messages_script_id ON coach_messages(script_id);`;
       await sql`CREATE INDEX IF NOT EXISTS idx_scenes_script_id ON scenes(script_id);`;
       await sql`CREATE INDEX IF NOT EXISTS idx_chat_messages_scene_id ON chat_messages(scene_id);`;
       await sql`CREATE INDEX IF NOT EXISTS idx_auditions_date ON auditions(audition_date);`;
@@ -289,6 +302,46 @@ export async function listChatMessages(sceneId: string): Promise<ChatMessageRow[
     SELECT * FROM chat_messages WHERE scene_id = ${sceneId} ORDER BY created_at ASC;
   `;
   return rows as ChatMessageRow[];
+}
+
+export async function clearChatMessages(sceneId: string): Promise<void> {
+  await ensureSchema();
+  await sql`DELETE FROM chat_messages WHERE scene_id = ${sceneId};`;
+}
+
+// ---------- Coach chat (general + whole-script) ----------
+
+/** `scriptId` null means the general, not-about-any-script conversation. */
+export async function addCoachMessage(input: {
+  scriptId: string | null;
+  role: 'user' | 'assistant';
+  content: string;
+}): Promise<ChatMessageRow> {
+  await ensureSchema();
+  const id = newId();
+  const { rows } = await sql`
+    INSERT INTO coach_messages (id, script_id, role, content)
+    VALUES (${id}, ${input.scriptId}, ${input.role}, ${input.content})
+    RETURNING *;
+  `;
+  return rows[0] as ChatMessageRow;
+}
+
+export async function listCoachMessages(scriptId: string | null): Promise<ChatMessageRow[]> {
+  await ensureSchema();
+  const { rows } = scriptId
+    ? await sql`SELECT * FROM coach_messages WHERE script_id = ${scriptId} ORDER BY created_at ASC;`
+    : await sql`SELECT * FROM coach_messages WHERE script_id IS NULL ORDER BY created_at ASC;`;
+  return rows as ChatMessageRow[];
+}
+
+export async function clearCoachMessages(scriptId: string | null): Promise<void> {
+  await ensureSchema();
+  if (scriptId) {
+    await sql`DELETE FROM coach_messages WHERE script_id = ${scriptId};`;
+  } else {
+    await sql`DELETE FROM coach_messages WHERE script_id IS NULL;`;
+  }
 }
 
 // ---------- Auditions ----------

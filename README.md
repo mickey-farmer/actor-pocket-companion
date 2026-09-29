@@ -15,9 +15,14 @@ that script — plus tools to memorize your lines.
   **beat breakdown**
 - A **Cheat Sheet** view collects the above into one glanceable, printable
   page
-- A **Chat** tab: a Meisner-trained coach/scene-partner, strictly scoped to
-  that scene and character — it won't help with unrelated requests (e.g.
-  "write me a script for X")
+- **Coach chat**, in three places:
+  - A **Chat** tab on every scene: a Meisner-trained coach/scene-partner,
+    strictly scoped to that scene and character — it won't help with
+    unrelated requests (e.g. "write me a script for X")
+  - **Chat about script** on each script page: the coach reads the whole
+    script, for arc, relationships, and cross-scene questions
+  - A general **Coach Chat** in the main nav for anything performance-related
+    (craft, auditions, self-tapes, voice acting, career)
 - **Memorize** tools: line-cover mode, cue-card drill, a typed self-quiz that
   scores your recall accuracy, and a highlighted read-through
 

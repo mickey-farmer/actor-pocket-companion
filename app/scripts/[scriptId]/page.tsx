@@ -19,6 +19,17 @@ export default async function ScriptPage({
 
   const scenes = await listScenes(script.id);
 
+  const chatAction = (
+    <Link
+      href={`/scripts/${script.id}/chat`}
+      className="flex items-center gap-1.5 rounded border border-stage-border px-2.5 py-1.5 text-xs font-medium text-stage-muted transition-colors hover:border-stage-accent hover:text-stage-accent"
+    >
+      <Icon name="chat" size={15} />
+      <span className="hidden sm:inline">Chat about script</span>
+      <span className="sm:hidden">Chat</span>
+    </Link>
+  );
+
   if (!script.character) {
     const detected = Array.from(new Set(scenes.flatMap((s) => s.characters))).sort();
     return (
@@ -28,6 +39,7 @@ export default async function ScriptPage({
           subtitle="Choose your character to continue"
           backHref="/scripts"
           backLabel="All scripts"
+          actions={chatAction}
         />
         <PageBody>
           <CharacterPicker scriptId={script.id} detectedCharacters={detected} />
@@ -50,6 +62,7 @@ export default async function ScriptPage({
         }`}
         backHref="/scripts"
         backLabel="All scripts"
+        actions={chatAction}
       />
       <PageBody>
         {scenes.length === 0 ? (
