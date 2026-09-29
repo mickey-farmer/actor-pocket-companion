@@ -23,7 +23,9 @@ export type IconName =
   | 'palette'
   | 'chat'
   | 'mic'
-  | 'book';
+  | 'book'
+  | 'more'
+  | 'sidebar';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   scripts: (
@@ -99,6 +101,20 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" />
       <path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5" />
       <path d="M8.5 7.5h7" />
+    </>
+  ),
+  more: (
+    <>
+      <circle cx="5.5" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="12" cy="12" r="1.3" fill="currentColor" stroke="none" />
+      <circle cx="18.5" cy="12" r="1.3" fill="currentColor" stroke="none" />
+    </>
+  ),
+  sidebar: (
+    <>
+      <rect x="3" y="4" width="18" height="16" rx="2" />
+      <path d="M9 4v16" />
+      <path d="M15.5 10l-2 2 2 2" />
     </>
   ),
 };

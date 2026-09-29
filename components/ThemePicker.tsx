@@ -47,13 +47,15 @@ export default function ThemePicker() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="true"
-        className="flex w-full items-center gap-2.5 rounded px-2.5 py-2 text-sm text-stage-muted transition-colors hover:bg-stage-panel2 hover:text-stage-text"
+        aria-label="Theme"
+        title="Theme"
+        className="apc-rail-item flex w-full items-center gap-2.5 rounded px-2.5 py-2 text-sm text-stage-muted transition-colors hover:bg-stage-panel2 hover:text-stage-text"
       >
         <Icon name="palette" size={17} />
-        <span className="flex-1 text-left">Theme</span>
+        <span className="apc-expanded-only flex-1 text-left">Theme</span>
         <span
           aria-hidden="true"
-          className="h-4 w-4 rounded-full border border-stage-border"
+          className="apc-expanded-only h-4 w-4 rounded-full border border-stage-border"
           style={{ backgroundColor: THEME_SWATCHES[theme] }}
         />
       </button>
@@ -62,7 +64,7 @@ export default function ThemePicker() {
         <div
           role="menu"
           aria-label="Choose a theme"
-          className="absolute bottom-full left-0 z-30 mb-1 w-full overflow-hidden rounded-lg border border-stage-border bg-stage-panel shadow-pop"
+          className="absolute bottom-full left-0 z-30 mb-1 w-full min-w-[12rem] overflow-hidden rounded-lg border border-stage-border bg-stage-panel shadow-pop"
         >
           {THEMES.map((t) => {
             const active = t === theme;

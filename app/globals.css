@@ -190,7 +190,45 @@ select {
   tab-size: 4;
 }
 
+/* ---------------------------------------------------------------------------
+   Desktop sidebar: expanded (16rem) or collapsed to an icon rail (4rem).
+   Driven by data-sidebar on <html> so the right width applies before React
+   hydrates (see lib/useSidebarCollapsed.ts). Below md the sidebar is hidden
+   and the mobile tab bar takes over, so none of this applies.
+--------------------------------------------------------------------------- */
+@media (min-width: 768px) {
+  .apc-sidebar {
+    width: 16rem;
+    transition: width 150ms ease;
+  }
+  .apc-content {
+    padding-left: 16rem;
+    transition: padding-left 150ms ease;
+  }
+  [data-sidebar='collapsed'] .apc-sidebar {
+    width: 4rem;
+  }
+  [data-sidebar='collapsed'] .apc-content {
+    padding-left: 4rem;
+  }
+  [data-sidebar='collapsed'] .apc-expanded-only {
+    display: none;
+  }
+  /* Icon-only rows: center the icon in the rail. */
+  [data-sidebar='collapsed'] .apc-rail-item {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  [data-sidebar='collapsed'] .apc-collapse-icon {
+    transform: rotate(180deg);
+  }
+}
+
 @media print {
+  .apc-content {
+    padding-left: 0 !important;
+  }
   body {
     background: white !important;
     color: black !important;

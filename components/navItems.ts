@@ -13,19 +13,21 @@ export interface NavItem {
   /** Shorter label for the mobile tab bar, where width is tight. */
   shortLabel: string;
   icon: IconName;
-  /** Leave off the mobile tab bar (it only fits ~6). Defaults to shown. */
-  desktopOnly?: boolean;
+  /**
+   * Gets its own tab in the mobile bottom bar. Everything else lives behind
+   * the bar's "More" tab — the bar only has room for about five targets.
+   */
+  primary?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: '/scripts', label: 'Scripts', shortLabel: 'Scripts', icon: 'scripts' },
-  { href: '/chat', label: 'Coach Chat', shortLabel: 'Coach', icon: 'chat' },
-  { href: '/voice', label: 'Voice Lab', shortLabel: 'Voice', icon: 'mic' },
-  { href: '/auditions', label: 'Auditions', shortLabel: 'Auditions', icon: 'auditions' },
+  { href: '/scripts', label: 'Scripts', shortLabel: 'Scripts', icon: 'scripts', primary: true },
+  { href: '/chat', label: 'Coach Chat', shortLabel: 'Coach', icon: 'chat', primary: true },
+  { href: '/voice', label: 'Voice Lab', shortLabel: 'Voice', icon: 'mic', primary: true },
+  { href: '/auditions', label: 'Auditions', shortLabel: 'Auditions', icon: 'auditions', primary: true },
   { href: '/memorize', label: 'Memorize', shortLabel: 'Memorize', icon: 'memorize' },
   { href: '/challenge', label: "Today's Challenge", shortLabel: 'Today', icon: 'flame' },
-  // Reachable on mobile from the Coach Chat page header instead.
-  { href: '/glossary', label: 'Glossary', shortLabel: 'Glossary', icon: 'book', desktopOnly: true },
+  { href: '/glossary', label: 'Glossary', shortLabel: 'Glossary', icon: 'book' },
 ];
 
 /**
