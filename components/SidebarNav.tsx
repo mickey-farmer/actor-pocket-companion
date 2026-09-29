@@ -108,173 +108,179 @@ export default function SidebarNav({ onNavigate }: { onNavigate?: () => void }) 
                 href={item.href}
                 onClick={onNavigate}
                 aria-current={active ? 'page' : undefined}
-                className={`flex items-center gap-2.5 rounded px-2.5 py-2 text-sm font-medium transition-colors ${
+                aria-label={item.label}
+                title={item.label}
+                className={`apc-rail-item flex items-center gap-2.5 rounded px-2.5 py-2 text-sm font-medium transition-colors ${
                   active
                     ? 'bg-stage-accentSoft/15 text-stage-accent'
                     : 'text-stage-muted hover:bg-stage-panel2 hover:text-stage-text'
                 }`}
               >
                 <Icon name={item.icon} size={17} strokeWidth={active ? 2 : 1.75} />
-                {item.label}
+                <span className="apc-expanded-only whitespace-nowrap">{item.label}</span>
               </Link>
             </li>
           );
         })}
       </ul>
 
-      {/* Script tree — the reason the desktop sidebar earns its width. Lets
-          you jump straight to a scene without going back through the list. */}
-      <SectionLabel
-        action={
-          <Link
-            href="/scripts"
-            onClick={onNavigate}
-            aria-label="Add a script"
-            className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
-          >
-            <Icon name="plus" size={15} strokeWidth={2} />
-          </Link>
-        }
-      >
-        Library
-      </SectionLabel>
-
-      {loading && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
-      {!loading && scripts.length === 0 && (
-        <p className="px-2.5 py-1 text-xs text-stage-subtle">No scripts yet.</p>
-      )}
-
-      <ul className="space-y-0.5">
-        {scripts.map((s) => {
-          const expanded = isExpanded(s.id);
-          const scriptActive = pathname === `/scripts/${s.id}`;
-          const scenes = scenesByScript[s.id] ?? [];
-          return (
-            <li key={s.id}>
-              <div
-                className={`flex items-center rounded transition-colors ${
-                  scriptActive
-                    ? 'bg-stage-accentSoft/15 text-stage-accent'
-                    : 'text-stage-muted hover:bg-stage-panel2'
-                }`}
-              >
-                <button
-                  onClick={() => toggle(s.id)}
-                  aria-label={expanded ? `Collapse ${s.title}` : `Expand ${s.title}`}
-                  aria-expanded={expanded}
-                  className="flex h-8 w-7 shrink-0 items-center justify-center text-stage-subtle hover:text-stage-text"
-                >
-                  <Icon
-                    name="chevronRight"
-                    size={13}
-                    strokeWidth={2.5}
-                    className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
-                  />
-                </button>
-                <Link
-                  href={`/scripts/${s.id}`}
-                  onClick={onNavigate}
-                  className="min-w-0 flex-1 truncate py-1.5 pr-2 text-sm"
-                >
-                  {s.title}
-                </Link>
-              </div>
-
-              {expanded && (
-                <ul className="ml-[1.3rem] space-y-px border-l border-stage-border pl-2">
-                  {loadingScenes[s.id] && (
-                    <li className="py-1 pl-2 text-xs text-stage-subtle">Loading scenes…</li>
-                  )}
-                  {!loadingScenes[s.id] && scenes.length === 0 && (
-                    <li className="py-1 pl-2 text-xs text-stage-subtle">No scenes found.</li>
-                  )}
-                  {scenes.map((scene) => {
-                    const href = `/scripts/${s.id}/scenes/${scene.id}`;
-                    const active = pathname === href;
-                    return (
-                      <li key={scene.id}>
-                        <Link
-                          href={href}
-                          onClick={onNavigate}
-                          aria-current={active ? 'page' : undefined}
-                          className={`block truncate rounded px-2 py-1.5 text-xs transition-colors ${
-                            active
-                              ? 'bg-stage-accentSoft/15 font-medium text-stage-accent'
-                              : 'text-stage-subtle hover:bg-stage-panel2 hover:text-stage-text'
-                          }`}
-                        >
-                          <span className="tabular-nums text-stage-subtle">
-                            {scene.scene_index + 1}.
-                          </span>{' '}
-                          {scene.heading}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-
-      <SectionLabel
-        action={
-          <Link
-            href="/auditions/new"
-            onClick={onNavigate}
-            aria-label="Add an audition"
-            className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
-          >
-            <Icon name="plus" size={15} strokeWidth={2} />
-          </Link>
-        }
-      >
-        Upcoming
-      </SectionLabel>
-
-      {loadingAuditions && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
-      {!loadingAuditions && upcomingAuditions.length === 0 && (
-        <p className="px-2.5 py-1 text-xs text-stage-subtle">Nothing tracked yet.</p>
-      )}
-
-      <ul className="space-y-0.5">
-        {upcomingAuditions.map((a) => {
-          const href = `/auditions/${a.id}`;
-          const active = pathname === href;
-          return (
-            <li key={a.id}>
-              <Link
-                href={href}
-                onClick={onNavigate}
-                aria-current={active ? 'page' : undefined}
-                className={`block rounded px-2.5 py-1.5 transition-colors ${
-                  active
-                    ? 'bg-stage-accentSoft/15 text-stage-accent'
-                    : 'hover:bg-stage-panel2'
-                }`}
-              >
-                <span className="block truncate text-xs font-medium text-stage-muted">
-                  {a.project}
-                </span>
-                <span className="block truncate text-[11px] text-stage-subtle">
-                  {formatAuditionDate(a.audition_date)}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-
-      {auditions.length > MAX_SIDEBAR_AUDITIONS && (
-        <Link
-          href="/auditions"
-          onClick={onNavigate}
-          className="mt-1 block px-2.5 py-1 text-xs text-stage-accent hover:underline"
+      {/* Everything below is hidden when the sidebar is collapsed to the
+          icon rail — a scene tree and audition list don't work at 4rem. */}
+      <div className="apc-expanded-only">
+        {/* Script tree — the reason the desktop sidebar earns its width. Lets
+            you jump straight to a scene without going back through the list. */}
+        <SectionLabel
+          action={
+            <Link
+              href="/scripts"
+              onClick={onNavigate}
+              aria-label="Add a script"
+              className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
+            >
+              <Icon name="plus" size={15} strokeWidth={2} />
+            </Link>
+          }
         >
-          View all {auditions.length}
-        </Link>
-      )}
+          Library
+        </SectionLabel>
+
+        {loading && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
+        {!loading && scripts.length === 0 && (
+          <p className="px-2.5 py-1 text-xs text-stage-subtle">No scripts yet.</p>
+        )}
+
+        <ul className="space-y-0.5">
+          {scripts.map((s) => {
+            const expanded = isExpanded(s.id);
+            const scriptActive = pathname === `/scripts/${s.id}`;
+            const scenes = scenesByScript[s.id] ?? [];
+            return (
+              <li key={s.id}>
+                <div
+                  className={`flex items-center rounded transition-colors ${
+                    scriptActive
+                      ? 'bg-stage-accentSoft/15 text-stage-accent'
+                      : 'text-stage-muted hover:bg-stage-panel2'
+                  }`}
+                >
+                  <button
+                    onClick={() => toggle(s.id)}
+                    aria-label={expanded ? `Collapse ${s.title}` : `Expand ${s.title}`}
+                    aria-expanded={expanded}
+                    className="flex h-8 w-7 shrink-0 items-center justify-center text-stage-subtle hover:text-stage-text"
+                  >
+                    <Icon
+                      name="chevronRight"
+                      size={13}
+                      strokeWidth={2.5}
+                      className={`transition-transform ${expanded ? 'rotate-90' : ''}`}
+                    />
+                  </button>
+                  <Link
+                    href={`/scripts/${s.id}`}
+                    onClick={onNavigate}
+                    className="min-w-0 flex-1 truncate py-1.5 pr-2 text-sm"
+                  >
+                    {s.title}
+                  </Link>
+                </div>
+
+                {expanded && (
+                  <ul className="ml-[1.3rem] space-y-px border-l border-stage-border pl-2">
+                    {loadingScenes[s.id] && (
+                      <li className="py-1 pl-2 text-xs text-stage-subtle">Loading scenes…</li>
+                    )}
+                    {!loadingScenes[s.id] && scenes.length === 0 && (
+                      <li className="py-1 pl-2 text-xs text-stage-subtle">No scenes found.</li>
+                    )}
+                    {scenes.map((scene) => {
+                      const href = `/scripts/${s.id}/scenes/${scene.id}`;
+                      const active = pathname === href;
+                      return (
+                        <li key={scene.id}>
+                          <Link
+                            href={href}
+                            onClick={onNavigate}
+                            aria-current={active ? 'page' : undefined}
+                            className={`block truncate rounded px-2 py-1.5 text-xs transition-colors ${
+                              active
+                                ? 'bg-stage-accentSoft/15 font-medium text-stage-accent'
+                                : 'text-stage-subtle hover:bg-stage-panel2 hover:text-stage-text'
+                            }`}
+                          >
+                            <span className="tabular-nums text-stage-subtle">
+                              {scene.scene_index + 1}.
+                            </span>{' '}
+                            {scene.heading}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+
+        <SectionLabel
+          action={
+            <Link
+              href="/auditions/new"
+              onClick={onNavigate}
+              aria-label="Add an audition"
+              className="rounded p-0.5 text-stage-subtle transition-colors hover:text-stage-accent"
+            >
+              <Icon name="plus" size={15} strokeWidth={2} />
+            </Link>
+          }
+        >
+          Upcoming
+        </SectionLabel>
+
+        {loadingAuditions && <p className="px-2.5 py-1 text-xs text-stage-subtle">Loading…</p>}
+        {!loadingAuditions && upcomingAuditions.length === 0 && (
+          <p className="px-2.5 py-1 text-xs text-stage-subtle">Nothing tracked yet.</p>
+        )}
+
+        <ul className="space-y-0.5">
+          {upcomingAuditions.map((a) => {
+            const href = `/auditions/${a.id}`;
+            const active = pathname === href;
+            return (
+              <li key={a.id}>
+                <Link
+                  href={href}
+                  onClick={onNavigate}
+                  aria-current={active ? 'page' : undefined}
+                  className={`block rounded px-2.5 py-1.5 transition-colors ${
+                    active
+                      ? 'bg-stage-accentSoft/15 text-stage-accent'
+                      : 'hover:bg-stage-panel2'
+                  }`}
+                >
+                  <span className="block truncate text-xs font-medium text-stage-muted">
+                    {a.project}
+                  </span>
+                  <span className="block truncate text-[11px] text-stage-subtle">
+                    {formatAuditionDate(a.audition_date)}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+
+        {auditions.length > MAX_SIDEBAR_AUDITIONS && (
+          <Link
+            href="/auditions"
+            onClick={onNavigate}
+            className="mt-1 block px-2.5 py-1 text-xs text-stage-accent hover:underline"
+          >
+            View all {auditions.length}
+          </Link>
+        )}
+      </div>
     </nav>
   );
 }

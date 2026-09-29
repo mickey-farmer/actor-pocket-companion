@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from 'next';
-import Script from 'next/script';
 import './globals.css';
 import AppShell from '@/components/AppShell';
 import RegisterServiceWorker from '@/components/RegisterServiceWorker';
@@ -25,7 +24,7 @@ export const viewport: Viewport = {
 // Keep this list in sync with THEMES in components/ThemeContext.tsx — it's
 // duplicated here (rather than imported) so the anti-flash script stays a
 // plain inline string with no bundling/import concerns.
-const THEME_INIT_SCRIPT = `
+const INIT_SCRIPT = `
 (function () {
   var valid = ['dusk', 'slate', 'pink', 'sage', 'dark', 'light'];
   try {
@@ -34,6 +33,12 @@ const THEME_INIT_SCRIPT = `
   } catch (e) {
     document.documentElement.setAttribute('data-theme', 'dusk');
   }
+  // Desktop sidebar collapsed state — see lib/useSidebarCollapsed.ts.
+  try {
+    if (localStorage.getItem('apc-sidebar') === 'collapsed') {
+      document.documentElement.setAttribute('data-sidebar', 'collapsed');
+    }
+  } catch (e) {}
 })();
 `;
 
@@ -45,11 +50,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-stage-bg font-sans text-stage-text antialiased">
-        {/* Runs before hydration so the saved theme applies with no flash
-            of the default "dusk" theme on load. */}
-        <Script id="apc-theme-init" strategy="beforeInteractive">
-          {THEME_INIT_SCRIPT}
-        </Script>
+        {/* A plain inline script, first thing in <body>, so the browser runs
+            it while parsing — before the sidebar or any themed content is
+            painted. (next/script's beforeInteractive only queues the code
+            for Next's runtime to run later, which could flash the default
+            theme and animate a collapsed sidebar shut on every load.) */}
+        <script dangerouslySetInnerHTML={{ __html: INIT_SCRIPT }} />
         <RegisterServiceWorker />
         <ThemeProvider>
           <AppShell>{children}</AppShell>
