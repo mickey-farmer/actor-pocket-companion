@@ -20,7 +20,8 @@ export type IconName =
   | 'close'
   | 'check'
   | 'file'
-  | 'palette';
+  | 'palette'
+  | 'chat';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   scripts: (
@@ -77,6 +78,12 @@ const PATHS: Record<IconName, React.ReactNode> = {
       <circle cx="7.5" cy="12" r="1.1" fill="currentColor" stroke="none" />
       <circle cx="9.8" cy="7.9" r="1.1" fill="currentColor" stroke="none" />
       <circle cx="14.3" cy="7.6" r="1.1" fill="currentColor" stroke="none" />
+    </>
+  ),
+  chat: (
+    <>
+      <path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 19.5l1.4-4.3A7.5 7.5 0 1 1 20 11.5z" />
+      <path d="M9 10.5h6M9 13.5h3.5" />
     </>
   ),
 };

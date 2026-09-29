@@ -17,6 +17,7 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { href: '/scripts', label: 'Scripts', shortLabel: 'Scripts', icon: 'scripts' },
+  { href: '/chat', label: 'Coach Chat', shortLabel: 'Coach', icon: 'chat' },
   { href: '/auditions', label: 'Auditions', shortLabel: 'Auditions', icon: 'auditions' },
   { href: '/memorize', label: 'Memorize', shortLabel: 'Memorize', icon: 'memorize' },
   { href: '/challenge', label: "Today's Challenge", shortLabel: 'Today', icon: 'flame' },

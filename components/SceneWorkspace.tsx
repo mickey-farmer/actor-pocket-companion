@@ -86,19 +86,30 @@ export default function SceneWorkspace({
           </div>
         )}
 
-        {/* Desktop tab strip */}
-        <div className="no-print hidden flex-wrap gap-1 border-b border-stage-border md:flex">
+        {/* Scene tabs, on every screen size. These used to be a fixed bar at
+            the bottom on mobile, but the app-wide MobileTabBar now owns that
+            spot and sat on top of it — hiding Chat and every other tab on
+            phones. Sticky under the header instead, and scrollable
+            sideways if the labels don't fit. */}
+        <div
+          role="tablist"
+          aria-label="Scene tools"
+          className="no-print sticky top-14 z-10 -mx-4 flex gap-1 overflow-x-auto border-b border-stage-border bg-stage-bg/95 px-4 backdrop-blur sm:-mx-6 sm:px-6"
+        >
           {TABS.map((t) => (
             <button
               key={t.id}
+              role="tab"
+              aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
-              className={`px-3 py-2 text-sm ${
+              className={`shrink-0 whitespace-nowrap px-3 py-2.5 text-sm ${
                 tab === t.id
-                  ? 'border-b-2 border-stage-accent text-stage-accent'
+                  ? 'border-b-2 border-stage-accent font-medium text-stage-accent'
                   : 'text-stage-muted hover:text-stage-text'
               }`}
             >
-              {t.label}
+              <span className="sm:hidden">{t.shortLabel}</span>
+              <span className="hidden sm:inline">{t.label}</span>
             </button>
           ))}
         </div>
@@ -119,7 +130,19 @@ export default function SceneWorkspace({
               character={character}
             />
           )}
-          {tab === 'chat' && <ChatPanel scriptId={scriptId} sceneId={scene.id} />}
+          {tab === 'chat' && (
+            <ChatPanel
+              endpoint={`/api/scripts/${scriptId}/scenes/${scene.id}/chat`}
+              scopeNote={`Scene coach for ${character} in this scene. For the whole script, use “Chat about script” on the script page.`}
+              emptyText="Say hello, or ask where to start — your coach will pick up from the moment before."
+              placeholder="Talk with your scene coach…"
+              suggestions={[
+                'Where should I start with this scene?',
+                'What do I want from the other person here?',
+                'Help me find the moment before.',
+              ]}
+            />
+          )}
           {tab === 'memorize' && <MemorizeTabs lines={lines} character={character} />}
           {tab === 'notes' && (
             <NotesPanel scriptId={scriptId} sceneId={scene.id} initialNotes={scene.notes} />
@@ -127,28 +150,6 @@ export default function SceneWorkspace({
         </div>
       </div>
 
-      {/* Mobile bottom tab bar */}
-      <nav
-        className="no-print fixed inset-x-0 bottom-0 z-20 flex border-t border-stage-border bg-stage-panel md:hidden"
-        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
-      >
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex flex-1 flex-col items-center gap-0.5 py-2.5 text-xs ${
-              tab === t.id ? 'text-stage-accent' : 'text-stage-muted'
-            }`}
-          >
-            <span
-              className={`h-1.5 w-1.5 rounded-full ${
-                tab === t.id ? 'bg-stage-accent' : 'bg-transparent'
-              }`}
-            />
-            {t.shortLabel}
-          </button>
-        ))}
-      </nav>
     </>
   );
 }
