@@ -13,14 +13,19 @@ export interface NavItem {
   /** Shorter label for the mobile tab bar, where width is tight. */
   shortLabel: string;
   icon: IconName;
+  /** Leave off the mobile tab bar (it only fits ~6). Defaults to shown. */
+  desktopOnly?: boolean;
 }
 
 export const NAV_ITEMS: NavItem[] = [
   { href: '/scripts', label: 'Scripts', shortLabel: 'Scripts', icon: 'scripts' },
   { href: '/chat', label: 'Coach Chat', shortLabel: 'Coach', icon: 'chat' },
+  { href: '/voice', label: 'Voice Lab', shortLabel: 'Voice', icon: 'mic' },
   { href: '/auditions', label: 'Auditions', shortLabel: 'Auditions', icon: 'auditions' },
   { href: '/memorize', label: 'Memorize', shortLabel: 'Memorize', icon: 'memorize' },
   { href: '/challenge', label: "Today's Challenge", shortLabel: 'Today', icon: 'flame' },
+  // Reachable on mobile from the Coach Chat page header instead.
+  { href: '/glossary', label: 'Glossary', shortLabel: 'Glossary', icon: 'book', desktopOnly: true },
 ];
 
 /**

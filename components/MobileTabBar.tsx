@@ -27,14 +27,14 @@ export default function MobileTabBar() {
       style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       <ul className="flex items-stretch">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => !item.desktopOnly).map((item) => {
           const active = isNavItemActive(item.href, pathname);
           return (
             <li key={item.href} className="flex-1">
               <Link
                 href={item.href}
                 aria-current={active ? 'page' : undefined}
-                className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 px-1 py-2 text-[11px] font-medium transition-colors ${
+                className={`flex min-h-[3.5rem] flex-col items-center justify-center gap-1 px-1 py-2 text-[10px] font-medium sm:text-[11px] transition-colors ${
                   active
                     ? 'text-stage-accent'
                     : 'text-stage-muted active:text-stage-text'

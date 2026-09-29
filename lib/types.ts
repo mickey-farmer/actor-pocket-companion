@@ -113,3 +113,73 @@ export interface DailyChallengeRow {
   completed_at: string | null;
   created_at: string;
 }
+
+// ---------- Voice Lab ----------
+
+export const VOICE_MEDIUMS = ['animation', 'game', 'anime-dub', 'commercial', 'other'] as const;
+export type VoiceMedium = (typeof VOICE_MEDIUMS)[number];
+
+/**
+ * The editable, descriptive fields of a voice card. Kept as one list so the
+ * form, the API validation and the AI "suggest a voice" response all agree
+ * on the same keys.
+ */
+export const VOICE_CARD_FIELDS = [
+  'age',
+  'pitch',
+  'placement',
+  'texture',
+  'pace',
+  'attitude',
+  'voice_references',
+  'physicality',
+] as const;
+export type VoiceCardField = (typeof VOICE_CARD_FIELDS)[number];
+
+export interface VoiceCharacterRow extends Record<VoiceCardField, string> {
+  id: string;
+  name: string;
+  project: string;
+  medium: VoiceMedium;
+  description: string;
+  sample_lines: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+/** A recorded take, without its audio (fetched separately — it's large). */
+export interface VoiceTakeRow {
+  id: string;
+  character_id: string | null;
+  line_text: string;
+  direction: string;
+  mime_type: string;
+  duration_ms: number;
+  is_keeper: boolean;
+  is_reference: boolean;
+  created_at: string;
+}
+
+export const VOCAL_SESSION_KINDS = [
+  'dialogue',
+  'efforts',
+  'screaming',
+  'character-voices',
+  'singing',
+  'other',
+] as const;
+export type VocalSessionKind = (typeof VOCAL_SESSION_KINDS)[number];
+
+export interface VocalSessionRow {
+  id: string;
+  // 'YYYY-MM-DD' in the user's local day, stored as text for the same reason
+  // as DailyChallengeRow.challenge_date.
+  session_date: string;
+  kind: VocalSessionKind;
+  minutes: number;
+  intensity: number; // 1-5
+  voice_feel: number; // 1-5, how the voice felt afterwards (5 = great)
+  notes: string;
+  created_at: string;
+}

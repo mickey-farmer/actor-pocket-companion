@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { listScripts } from '@/lib/db';
 import AppHeader from '@/components/AppHeader';
 import ChatPanel from '@/components/ChatPanel';
+import Icon from '@/components/Icon';
 import PageBody from '@/components/PageBody';
 
 export const dynamic = 'force-dynamic';
@@ -11,7 +12,19 @@ export default async function ChatPage() {
 
   return (
     <>
-      <AppHeader title="Coach Chat" subtitle="Ask anything about acting, auditions or voice work" />
+      <AppHeader
+        title="Coach Chat"
+        subtitle="Ask anything about acting, auditions or voice work"
+        actions={
+          <Link
+            href="/glossary"
+            className="flex items-center gap-1.5 rounded border border-stage-border px-2.5 py-1.5 text-xs font-medium text-stage-muted transition-colors hover:border-stage-accent hover:text-stage-accent"
+          >
+            <Icon name="book" size={15} />
+            Glossary
+          </Link>
+        }
+      />
       <PageBody className="space-y-4">
         <ChatPanel
           endpoint="/api/chat"

@@ -26,6 +26,21 @@ that script — plus tools to memorize your lines.
 - **Memorize** tools: line-cover mode, cue-card drill, a typed self-quiz that
   scores your recall accuracy, and a highlighted read-through
 
+- **Voice Lab** for animation and video game VO:
+  - **Voice cards** — pitch, placement, texture, pace, attitude, references
+    and physicality for each character voice, with an AI "suggest a voice"
+    starting point and a reference clip to match
+  - **Booth** — record takes in the browser (browser voice processing is
+    turned off so efforts aren't ducked), star keepers, download takes for
+    your DAW, and get the next adjustment from an AI session director
+    (text-only: it can't hear the take, so tell it how it went)
+  - **Efforts & barks** — technique and safety notes plus randomized drills
+    ordered light-to-heavy like a real session
+  - **Vocal health** — guided warm-up and a session log that flags heavy
+    vocal load or a voice that's been feeling rough
+- **Glossary** — 300+ searchable terms across technique, stage, film/TV,
+  voice acting and the business
+
 See `BACKLOG.md` for what's deliberately deferred to later (objective &
 obstacle, relationship mapping, audio read-aloud, etc.)
 
