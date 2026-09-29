@@ -21,7 +21,9 @@ export type IconName =
   | 'check'
   | 'file'
   | 'palette'
-  | 'chat';
+  | 'chat'
+  | 'mic'
+  | 'book';
 
 const PATHS: Record<IconName, React.ReactNode> = {
   scripts: (
@@ -84,6 +86,19 @@ const PATHS: Record<IconName, React.ReactNode> = {
     <>
       <path d="M20 11.5a7.5 7.5 0 0 1-11 6.6L4 19.5l1.4-4.3A7.5 7.5 0 1 1 20 11.5z" />
       <path d="M9 10.5h6M9 13.5h3.5" />
+    </>
+  ),
+  mic: (
+    <>
+      <rect x="9" y="3" width="6" height="11" rx="3" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7" />
+    </>
+  ),
+  book: (
+    <>
+      <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" />
+      <path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5" />
+      <path d="M8.5 7.5h7" />
     </>
   ),
 };

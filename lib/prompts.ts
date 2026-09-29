@@ -166,3 +166,112 @@ Vary category and content from one challenge to the next — don't default to th
     { role: 'user', content: user },
   ];
 }
+
+// ---------- Voice Lab ----------
+
+/** Plain-text summary of a voice card, for giving the model context. */
+export function describeVoiceCard(c: {
+  name: string;
+  project?: string;
+  medium?: string;
+  description?: string;
+  age?: string;
+  pitch?: string;
+  placement?: string;
+  texture?: string;
+  pace?: string;
+  attitude?: string;
+  voice_references?: string;
+  physicality?: string;
+}): string {
+  const rows: [string, string | undefined][] = [
+    ['Character', c.name],
+    ['Project', c.project],
+    ['Medium', c.medium],
+    ['Description', c.description],
+    ['Age', c.age],
+    ['Pitch', c.pitch],
+    ['Placement', c.placement],
+    ['Texture', c.texture],
+    ['Pace / rhythm', c.pace],
+    ['Attitude', c.attitude],
+    ['References', c.voice_references],
+    ['Physicality', c.physicality],
+  ];
+  return rows
+    .filter(([, v]) => v && v.trim())
+    .map(([k, v]) => `${k}: ${v!.trim()}`)
+    .join('\n');
+}
+
+export function buildVoiceSuggestionMessages(input: {
+  name: string;
+  project: string;
+  medium: string;
+  description: string;
+}): ChatMessageInput[] {
+  const system = `You are an experienced voice director for animation and video games, helping a voice actor design a character voice they can reproduce consistently across sessions.
+
+Respond with ONLY a single JSON object (no prose outside it, no markdown fences) with exactly these string keys, each 1-2 concise, practical sentences a performer can act on:
+
+{
+  "age": "apparent vocal age and what that implies (e.g. 'Early teens — lighter weight, quick energy')",
+  "pitch": "where the voice sits relative to the actor's natural speaking pitch, and its range of movement",
+  "placement": "resonance placement: nasal/mask, head, mouth-forward, throat, chest — and how to find it",
+  "texture": "vocal quality: breathy, clean, gravelly, twangy, creaky, etc. — flag anything that needs care to do safely",
+  "pace": "tempo and rhythm of speech",
+  "attitude": "the character's core attitude / point of view that drives the sound",
+  "voice_references": "2-3 archetypes or kinds of performance to listen to for reference (describe types; don't claim to know specific actors' voices exactly)",
+  "physicality": "a physical choice that helps produce and hold the voice (posture, face, jaw, a gesture)"
+}
+
+Favor choices that are sustainable across a long record. If a gritty or strained quality is appropriate, suggest producing it with safe technique (e.g. false-fold / distortion placement, support) rather than squeezing the throat.`;
+
+  const user = `Character: ${input.name}
+Project: ${input.project || '(not given)'}
+Medium: ${input.medium}
+Description / breakdown: ${input.description || '(none — make reasonable, clearly flexible choices)'}`;
+
+  return [
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ];
+}
+
+export function buildDirectorMessages(input: {
+  voiceCard: string | null;
+  lineText: string;
+  context: string;
+  takeNumber: number;
+  previousNotes: string[];
+  actorNote: string;
+}): ChatMessageInput[] {
+  const system = `You are a voice director running a recording session for animation or a video game. The actor has just done a take and wants your next direction.
+
+You cannot hear the audio. Work from the line, the context, the character, the directions already given, and anything the actor tells you about the last take. Never pretend to have heard it.
+
+Give ONE direction for the next take, the way a real session director does over talkback:
+- 1-3 short sentences, spoken style, no preamble, no lists, no markdown.
+- Make it playable and specific: a new given circumstance, a stakes change, a physical adjustment, a size/proximity change ("smaller, you're right on the mic", "you're shouting across a battlefield"), a tempo or placement adjustment, or a different intention.
+- Each direction should be meaningfully different from the earlier ones so the actor explores range; after several takes you can also ask for "one more for safety" or a "wild" take.
+- For game VO, occasionally direct toward a variation the game would need (e.g. "same line, but you're injured", "now as a bark, half the length").
+- Keep the character's established voice unless deliberately stretching it — say so if you are.`;
+
+  const notes = input.previousNotes.length
+    ? input.previousNotes.map((n, i) => `${i + 1}. ${n}`).join('\n')
+    : '(none yet — this is the first direction)';
+
+  const user = `${input.voiceCard ? `CHARACTER VOICE CARD:\n${input.voiceCard}\n\n` : ''}LINE: ${input.lineText || '(no line given — free improvisation in character)'}
+CONTEXT: ${input.context || '(none given)'}
+TAKE JUST RECORDED: #${input.takeNumber}
+DIRECTIONS ALREADY GIVEN THIS SESSION:
+${notes}
+ACTOR'S NOTE ON THE LAST TAKE: ${input.actorNote || '(nothing)'}
+
+Give the next direction.`;
+
+  return [
+    { role: 'system', content: system },
+    { role: 'user', content: user },
+  ];
+}
